@@ -28,7 +28,7 @@ const LogoSchema = new Schema<ILogo>(
     },
     locale: {
       type: String,
-      enum: ['en', 'ar', 'bn', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'zh'],
+      enum: ['en', 'ar', 'bn', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'zh', 'vi', 'th', 'km', 'id', 'ne', 'uz', 'fil', 'mn', 'ur', 'si', 'ta', 'my'],
       default: 'en', // Default logo for all locales
     },
     isActive: {

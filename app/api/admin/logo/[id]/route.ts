@@ -7,7 +7,7 @@ const logoUpdateSchema = z.object({
   name: z.string().min(1).trim().optional(),
   imageUrl: z.string().url().trim().optional(),
   altText: z.string().trim().optional(),
-  locale: z.enum(['en', 'ar', 'bn', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'zh']).optional(),
+  locale: z.enum(['en', 'ar', 'bn', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'zh', 'vi', 'th', 'km', 'id', 'ne', 'uz', 'fil', 'mn', 'ur', 'si', 'ta', 'my']).optional(),
   isActive: z.boolean().optional(),
 });
 

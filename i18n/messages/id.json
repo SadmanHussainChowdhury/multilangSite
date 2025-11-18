@@ -1,0 +1,139 @@
+{
+  "common": {
+    "home": "Beranda",
+    "about": "Tentang",
+    "contact": "Kontak",
+    "login": "Masuk",
+    "logout": "Keluar",
+    "register": "Daftar",
+    "dashboard": "Dasbor",
+    "admin": "Admin",
+    "submit": "Kirim",
+    "cancel": "Batal",
+    "save": "Simpan",
+    "delete": "Hapus",
+    "edit": "Edit",
+    "back": "Kembali",
+    "readMore": "Baca Selengkapnya",
+    "getStarted": "Mulai",
+    "learnMore": "Pelajari Lebih Lanjut"
+  },
+  "nav": {
+    "aboutUs": "Tentang Kami",
+    "about": "Tentang",
+    "ceoMessage": "Pesan CEO",
+    "contactUs": "Hubungi Kami",
+    "taxRefund": "Pengembalian Pajak",
+    "incomeTaxRefund": "Pengembalian Pajak Penghasilan",
+    "houseRentTaxRefund": "Pengembalian Pajak Sewa Rumah",
+    "familyTaxRefund": "Pengembalian Pajak Keluarga",
+    "visaChanges": "Perubahan Visa",
+    "jobSupport": "Dukungan Pekerjaan",
+    "helpSupport": "Bantuan & Dukungan"
+  },
+  "home": {
+    "title": "Selamat Datang di MultiLang Site",
+    "subtitle": "Mitra terpercaya Anda untuk layanan pengembalian pajak",
+    "description": "Kami mengkhususkan diri dalam membantu individu dan keluarga menavigasi proses kompleks pengembalian pajak, memastikan Anda menerima manfaat maksimum yang menjadi hak Anda."
+  },
+  "about": {
+    "title": "Tentang Kami",
+    "subtitle": "Mitra terpercaya Anda untuk layanan pengembalian pajak",
+    "description": "Selamat datang di MultiLang Site, mitra terpercaya Anda untuk layanan pengembalian pajak. Kami mengkhususkan diri dalam membantu individu dan keluarga menavigasi proses kompleks pengembalian pajak, memastikan Anda menerima manfaat maksimum yang menjadi hak Anda.",
+    "mission": "Misi Kami",
+    "missionText": "Untuk menyediakan layanan pengembalian pajak yang luar biasa dengan integritas, profesionalisme, dan perhatian personal untuk setiap klien.",
+    "vision": "Visi Kami",
+    "visionText": "Untuk menjadi penyedia layanan pengembalian pajak terkemuka, yang diakui karena keahlian dan komitmen kami terhadap kesuksesan klien.",
+    "services": "Layanan Kami",
+    "service1": "Pengembalian Pajak Penghasilan",
+    "service2": "Pengembalian Pajak Sewa Rumah",
+    "service3": "Pengembalian Pajak Keluarga",
+    "service4": "Konsultasi dan panduan ahli"
+  },
+  "ceoMessage": {
+    "title": "Pesan CEO",
+    "greeting": "Kepada Klien dan Mitra Terhormat,",
+    "message1": "Selamat datang di MultiLang Site. Saya merasa terhormat untuk memimpin tim yang berdedikasi untuk membantu Anda menavigasi kompleksitas pengembalian pajak dan memaksimalkan manfaat Anda.",
+    "message2": "Komitmen kami terhadap keunggulan, integritas, dan layanan personal membuat kami berbeda. Kami memahami bahwa situasi setiap klien adalah unik, dan kami menyesuaikan layanan kami untuk memenuhi kebutuhan spesifik Anda.",
+    "message3": "Terima kasih telah mempercayai kami dengan kebutuhan pengembalian pajak Anda. Kami berharap dapat melayani Anda dan membantu Anda mencapai tujuan keuangan Anda.",
+    "signature": "Hormat kami,",
+    "ceoName": "CEO, MultiLang Site"
+  },
+  "contact": {
+    "title": "Hubungi Kami",
+    "subtitle": "Hubungi kantor kami",
+    "formTitle": "Formulir Pendaftaran",
+    "formSubtitle": "Harap isi semua bidang yang wajib diisi yang ditandai dengan *",
+    "name": "Nama Lengkap",
+    "alienNumber": "Nomor Registrasi Orang Asing",
+    "passportNumber": "Nomor Paspor",
+    "nationality": "Kewarganegaraan",
+    "phone": "Nomor Telepon",
+    "serviceType": "Jenis Layanan",
+    "message": "Informasi Tambahan",
+    "submit": "Kirim Pendaftaran",
+    "success": "Pendaftaran Anda telah dikirim. Terima kasih!",
+    "error": "Pengiriman gagal. Silakan coba lagi."
+  },
+  "services": {
+    "incomeTax": "Pengembalian Pajak Penghasilan",
+    "houseRent": "Pengembalian Pajak Sewa Rumah",
+    "familyTax": "Pengembalian Pajak Keluarga",
+    "other": "Lainnya"
+  },
+  "incomeTaxRefund": {
+    "title": "Pengembalian Pajak Penghasilan",
+    "description": "Dapatkan pengembalian pajak penghasilan Anda diproses dengan cepat dan efisien oleh tim ahli kami.",
+    "details": "Kami membantu Anda menavigasi sistem pajak yang kompleks dan memastikan Anda menerima pengembalian maksimum yang menjadi hak Anda. Profesional berpengalaman kami akan memandu Anda melalui setiap langkah proses.",
+    "benefits": "Manfaat",
+    "benefit1": "Waktu pemrosesan cepat",
+    "benefit2": "Panduan ahli",
+    "benefit3": "Jaminan pengembalian maksimum",
+    "benefit4": "Layanan personal"
+  },
+  "houseRentTaxRefund": {
+    "title": "Pengembalian Pajak Sewa Rumah",
+    "description": "Klaim pengembalian pajak sewa rumah Anda dengan bantuan ahli kami.",
+    "details": "Kami memahami kompleksitas pengurangan pajak sewa dan akan membantu Anda memaksimalkan pengembalian Anda. Tim kami memastikan semua pengeluaran yang memenuhi syarat didokumentasikan dan diklaim dengan benar.",
+    "benefits": "Manfaat",
+    "benefit1": "Dokumentasi komprehensif",
+    "benefit2": "Nasihat pajak ahli",
+    "benefit3": "Pengurangan maksimum",
+    "benefit4": "Dukungan khusus"
+  },
+  "familyTaxRefund": {
+    "title": "Pengembalian Pajak Keluarga",
+    "description": "Maksimalkan manfaat pengembalian pajak keluarga Anda dengan layanan komprehensif kami.",
+    "details": "Kami membantu keluarga menavigasi pengurangan dan kredit pajak untuk memastikan Anda menerima semua manfaat yang menjadi hak Anda. Layanan kami termasuk kredit pajak anak, pengurangan tanggungan, dan lainnya.",
+    "benefits": "Manfaat",
+    "benefit1": "Keahlian yang berfokus pada keluarga",
+    "benefit2": "Semua kredit yang memenuhi syarat",
+    "benefit3": "Tinjauan komprehensif",
+    "benefit4": "Dukungan berkelanjutan"
+  },
+  "visaChanges": {
+    "title": "Perubahan Visa",
+    "description": "Bantuan ahli untuk perubahan status visa dan pembaruan.",
+    "details": "Kami menyediakan dukungan komprehensif untuk perubahan visa, pembaruan status, dan dokumentasi terkait. Tim kami memastikan semua dokumen diajukan dan diproses dengan benar.",
+    "services": "Layanan Visa Kami",
+    "service1": "Perubahan status visa",
+    "service2": "Bantuan dokumentasi",
+    "service3": "Dukungan aplikasi",
+    "service4": "Layanan konsultasi"
+  },
+  "jobSupport": {
+    "title": "Dukungan Pekerjaan",
+    "description": "Layanan pencarian kerja dan dukungan karir yang komprehensif.",
+    "details": "Kami menawarkan berbagai layanan untuk membantu Anda menemukan pekerjaan, termasuk penulisan resume, persiapan wawancara, bantuan pencarian kerja, dan konseling karir.",
+    "services": "Layanan Dukungan Pekerjaan Kami",
+    "service1": "Penulisan dan optimasi resume",
+    "service2": "Persiapan wawancara",
+    "service3": "Bantuan pencarian kerja",
+    "service4": "Konseling karir"
+  },
+  "supportedCountries": {
+    "title": "Negara yang Didukung",
+    "subtitle": "Kami menyediakan layanan untuk klien dari negara-negara berikut",
+    "description": "Tim multibahasa kami siap membantu klien dari berbagai negara. Pilih negara Anda untuk melihat informasi kontak khusus dan layanan yang tersedia di wilayah Anda."
+  }
+}

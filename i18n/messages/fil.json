@@ -1,0 +1,139 @@
+{
+  "common": {
+    "home": "Home",
+    "about": "Tungkol",
+    "contact": "Makipag-ugnayan",
+    "login": "Mag-login",
+    "logout": "Mag-logout",
+    "register": "Magrehistro",
+    "dashboard": "Dashboard",
+    "admin": "Admin",
+    "submit": "Ipasa",
+    "cancel": "Kanselahin",
+    "save": "I-save",
+    "delete": "Tanggalin",
+    "edit": "I-edit",
+    "back": "Bumalik",
+    "readMore": "Magbasa pa",
+    "getStarted": "Magsimula",
+    "learnMore": "Matuto pa"
+  },
+  "nav": {
+    "aboutUs": "Tungkol sa Amin",
+    "about": "Tungkol",
+    "ceoMessage": "Mensahe ng CEO",
+    "contactUs": "Makipag-ugnayan sa Amin",
+    "taxRefund": "Tax Refund",
+    "incomeTaxRefund": "Income Tax Refund",
+    "houseRentTaxRefund": "House Rent Tax Refund",
+    "familyTaxRefund": "Family Tax Refund",
+    "visaChanges": "Pagbabago ng Visa",
+    "jobSupport": "Suporta sa Trabaho",
+    "helpSupport": "Tulong at Suporta"
+  },
+  "home": {
+    "title": "Maligayang Pagdating sa MultiLang Site",
+    "subtitle": "Ang iyong mapagkakatiwalaang partner para sa mga serbisyo ng tax refund",
+    "description": "Espesyalista kami sa pagtulong sa mga indibidwal at pamilya na mag-navigate sa kumplikadong proseso ng tax refunds, tinitiyak na makakatanggap ka ng maximum na benepisyo na may karapatan ka."
+  },
+  "about": {
+    "title": "Tungkol sa Amin",
+    "subtitle": "Ang iyong mapagkakatiwalaang partner para sa mga serbisyo ng tax refund",
+    "description": "Maligayang pagdating sa MultiLang Site, ang iyong mapagkakatiwalaang partner para sa mga serbisyo ng tax refund. Espesyalista kami sa pagtulong sa mga indibidwal at pamilya na mag-navigate sa kumplikadong proseso ng tax refunds.",
+    "mission": "Ang Aming Misyon",
+    "missionText": "Magbigay ng pambihirang serbisyo ng tax refund na may integridad, propesyonalismo, at personal na atensyon sa bawat kliyente.",
+    "vision": "Ang Aming Pananaw",
+    "visionText": "Maging nangungunang tagapagbigay ng serbisyo ng tax refund, kinikilala para sa aming kadalubhasaan at dedikasyon sa tagumpay ng kliyente.",
+    "services": "Ang Aming Mga Serbisyo",
+    "service1": "Income Tax Refund",
+    "service2": "House Rent Tax Refund",
+    "service3": "Family Tax Refund",
+    "service4": "Ekspertong konsultasyon at gabay"
+  },
+  "ceoMessage": {
+    "title": "Mensahe ng CEO",
+    "greeting": "Mahal naming Mga Kliyente at Partners,",
+    "message1": "Maligayang pagdating sa MultiLang Site. Ikinararangal kong mamuno sa isang koponan na nakatuon sa pagtulong sa inyo na mag-navigate sa mga kumplikasyon ng tax refunds at i-maximize ang inyong mga benepisyo.",
+    "message2": "Ang aming dedikasyon sa kahusayan, integridad, at personal na serbisyo ang nagpapabukod sa amin. Nauunawaan namin na ang sitwasyon ng bawat kliyente ay natatangi, at iniakma namin ang aming mga serbisyo upang matugunan ang inyong partikular na pangangailangan.",
+    "message3": "Salamat sa pagtitiwala sa amin para sa inyong mga pangangailangan sa tax refund. Umaasa kaming makapaglingkod sa inyo at makatulong na makamit ang inyong mga layunin sa pananalapi.",
+    "signature": "Lubos na gumagalang,",
+    "ceoName": "CEO, MultiLang Site"
+  },
+  "contact": {
+    "title": "Makipag-ugnayan sa Amin",
+    "subtitle": "Makipag-ugnayan sa aming opisina",
+    "formTitle": "Registration Form",
+    "formSubtitle": "Mangyaring punan ang lahat ng kinakailangang field na may markang *",
+    "name": "Buong Pangalan",
+    "alienNumber": "Alien Registration Number",
+    "passportNumber": "Passport Number",
+    "nationality": "Nasyonalidad",
+    "phone": "Numero ng Telepono",
+    "serviceType": "Uri ng Serbisyo",
+    "message": "Karagdagang Impormasyon",
+    "submit": "Ipasa ang Registration",
+    "success": "Ang inyong registration ay naipasa na. Salamat!",
+    "error": "Nabigo ang pagpapasa. Mangyaring subukan muli."
+  },
+  "services": {
+    "incomeTax": "Income Tax Refund",
+    "houseRent": "House Rent Tax Refund",
+    "familyTax": "Family Tax Refund",
+    "other": "Iba pa"
+  },
+  "incomeTaxRefund": {
+    "title": "Income Tax Refund",
+    "description": "Kunin ang inyong income tax refund na maproseso nang mabilis at mahusay kasama ang aming ekspertong koponan.",
+    "details": "Tinutulungan namin kayo na mag-navigate sa kumplikadong sistema ng buwis at tinitiyak na makakatanggap kayo ng maximum na refund na may karapatan kayo. Gagabayan kayo ng aming mga propesyonal na may karanasan sa bawat hakbang ng proseso.",
+    "benefits": "Mga Benepisyo",
+    "benefit1": "Mabilis na oras ng pagproseso",
+    "benefit2": "Ekspertong gabay",
+    "benefit3": "Garantiya ng maximum na refund",
+    "benefit4": "Personal na serbisyo"
+  },
+  "houseRentTaxRefund": {
+    "title": "House Rent Tax Refund",
+    "description": "I-claim ang inyong house rent tax refund kasama ang aming ekspertong tulong.",
+    "details": "Nauunawaan namin ang mga kumplikasyon ng rental tax deductions at tutulungan kayo na i-maximize ang inyong refund. Tinitiyak ng aming koponan na ang lahat ng kwalipikadong gastos ay naidokumento at na-claim nang tama.",
+    "benefits": "Mga Benepisyo",
+    "benefit1": "Komprehensibong dokumentasyon",
+    "benefit2": "Ekspertong payo sa buwis",
+    "benefit3": "Maximum na deductions",
+    "benefit4": "Dedikadong suporta"
+  },
+  "familyTaxRefund": {
+    "title": "Family Tax Refund",
+    "description": "I-maximize ang inyong mga benepisyo sa family tax refund kasama ang aming komprehensibong mga serbisyo.",
+    "details": "Tinutulungan namin ang mga pamilya na mag-navigate sa tax deductions at credits upang tiyakin na makakatanggap kayo ng lahat ng benepisyo na may karapatan kayo. Kasama sa aming mga serbisyo ang child tax credits, dependent deductions, at marami pa.",
+    "benefits": "Mga Benepisyo",
+    "benefit1": "Espesyalisasyon na nakatuon sa pamilya",
+    "benefit2": "Lahat ng kwalipikadong credits",
+    "benefit3": "Komprehensibong pagsusuri",
+    "benefit4": "Patuloy na suporta"
+  },
+  "visaChanges": {
+    "title": "Pagbabago ng Visa",
+    "description": "Ekspertong tulong para sa pagbabago ng status ng visa at mga update.",
+    "details": "Nagbibigay kami ng komprehensibong suporta para sa pagbabago ng visa, update ng status, at kaugnay na dokumentasyon. Tinitiyak ng aming koponan na ang lahat ng papeles ay na-file at naproseso nang tama.",
+    "services": "Ang Aming Mga Serbisyo sa Visa",
+    "service1": "Pagbabago ng status ng visa",
+    "service2": "Tulong sa dokumentasyon",
+    "service3": "Suporta sa aplikasyon",
+    "service4": "Mga serbisyo ng konsultasyon"
+  },
+  "jobSupport": {
+    "title": "Suporta sa Trabaho",
+    "description": "Komprehensibong serbisyo sa paghahanap ng trabaho at suporta sa karera.",
+    "details": "Nag-aalok kami ng iba't ibang serbisyo upang tulungan kayo na makahanap ng trabaho, kabilang ang pagsulat ng resume, paghahanda sa interbyu, tulong sa paghahanap ng trabaho, at career counseling.",
+    "services": "Ang Aming Mga Serbisyo sa Suporta sa Trabaho",
+    "service1": "Pagsulat at pag-optimize ng resume",
+    "service2": "Paghahanda sa interbyu",
+    "service3": "Tulong sa paghahanap ng trabaho",
+    "service4": "Career counseling"
+  },
+  "supportedCountries": {
+    "title": "Mga Suportadong Bansa",
+    "subtitle": "Nagbibigay kami ng serbisyo sa mga kliyente mula sa mga sumusunod na bansa",
+    "description": "Ang aming multilinggwal na koponan ay handa na tumulong sa mga kliyente mula sa iba't ibang bansa. Piliin ang inyong bansa upang makita ang partikular na impormasyon sa kontak at mga serbisyo na available sa inyong rehiyon."
+  }
+}

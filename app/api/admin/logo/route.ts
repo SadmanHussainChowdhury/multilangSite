@@ -7,7 +7,7 @@ const logoSchema = z.object({
   name: z.string().min(1, 'Name is required').trim(),
   imageUrl: z.string().url('Valid image URL is required').trim(),
   altText: z.string().trim().optional(),
-  locale: z.enum(['en', 'ar', 'bn', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'zh']).optional(),
+  locale: z.enum(['en', 'ar', 'bn', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'zh', 'vi', 'th', 'km', 'id', 'ne', 'uz', 'fil', 'mn', 'ur', 'si', 'ta', 'my']).optional(),
   isActive: z.boolean().optional().default(true),
 });
 

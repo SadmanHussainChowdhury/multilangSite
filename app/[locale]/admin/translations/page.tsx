@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { useLocale } from 'next-intl';
 import Navigation from '@/components/Navigation';
 import AdminNav from '@/components/AdminNav';
+import { locales, localeNames } from '@/i18n/config';
 
 interface Translation {
   _id: string;
@@ -339,17 +340,11 @@ export default function AdminTranslationsPage() {
                 className="w-full px-5 py-3 glass border-2 border-white/30 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all duration-300 bg-white/50 backdrop-blur-sm hover:border-blue-300"
               >
               <option value="all">All Languages</option>
-              <option value="en">English</option>
-              <option value="ar">Arabic</option>
-              <option value="bn">Bengali</option>
-              <option value="es">Spanish</option>
-              <option value="fr">French</option>
-              <option value="de">German</option>
-              <option value="it">Italian</option>
-              <option value="pt">Portuguese</option>
-              <option value="ru">Russian</option>
-              <option value="ja">Japanese</option>
-              <option value="zh">Chinese</option>
+              {locales.map((loc) => (
+                <option key={loc} value={loc}>
+                  {localeNames[loc]}
+                </option>
+              ))}
             </select>
           </div>
 

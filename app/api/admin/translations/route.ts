@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 
 const translationSchema = z.object({
   key: z.string().min(1, 'Key is required').trim(),
-  locale: z.enum(['en', 'ar', 'bn', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'zh']),
+  locale: z.enum(['en', 'ar', 'bn', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'zh', 'vi', 'th', 'km', 'id', 'ne', 'uz', 'fil', 'mn', 'ur', 'si', 'ta', 'my']),
   value: z.string().min(1, 'Value is required'),
   namespace: z.string().trim().optional(),
 });

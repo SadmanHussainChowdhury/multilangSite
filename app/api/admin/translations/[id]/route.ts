@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 const translationUpdateSchema = z.object({
   key: z.string().min(1).trim().optional(),
-  locale: z.enum(['en', 'ar', 'bn', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'zh']).optional(),
+  locale: z.enum(['en', 'ar', 'bn', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'zh', 'vi', 'th', 'km', 'id', 'ne', 'uz', 'fil', 'mn', 'ur', 'si', 'ta', 'my']).optional(),
   value: z.string().min(1).optional(),
   namespace: z.string().trim().optional(),
 });

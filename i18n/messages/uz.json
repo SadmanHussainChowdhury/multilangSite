@@ -1,0 +1,139 @@
+{
+  "common": {
+    "home": "Bosh sahifa",
+    "about": "Biz haqimizda",
+    "contact": "Aloqa",
+    "login": "Kirish",
+    "logout": "Chiqish",
+    "register": "Ro'yxatdan o'tish",
+    "dashboard": "Boshqaruv paneli",
+    "admin": "Administrator",
+    "submit": "Yuborish",
+    "cancel": "Bekor qilish",
+    "save": "Saqlash",
+    "delete": "O'chirish",
+    "edit": "Tahrirlash",
+    "back": "Orqaga",
+    "readMore": "Ko'proq o'qish",
+    "getStarted": "Boshlash",
+    "learnMore": "Ko'proq bilish"
+  },
+  "nav": {
+    "aboutUs": "Biz haqimizda",
+    "about": "Haqida",
+    "ceoMessage": "Bosh direktor xabari",
+    "contactUs": "Biz bilan bog'lanish",
+    "taxRefund": "Soliq qaytarish",
+    "incomeTaxRefund": "Daromad solig'i qaytarish",
+    "houseRentTaxRefund": "Uy ijarasi solig'i qaytarish",
+    "familyTaxRefund": "Oila solig'i qaytarish",
+    "visaChanges": "Viza o'zgarishlari",
+    "jobSupport": "Ish yordami",
+    "helpSupport": "Yordam va qo'llab-quvvatlash"
+  },
+  "home": {
+    "title": "MultiLang Site ga xush kelibsiz",
+    "subtitle": "Soliq qaytarish xizmatlari uchun ishonchli hamkoringiz",
+    "description": "Biz shaxslar va oilalarga soliq qaytarishning murakkab jarayonini boshqarishda yordam berishda mutaxassislarmiz, siz o'z huquqingiz bo'yicha maksimal foyda olishingizni ta'minlaymiz."
+  },
+  "about": {
+    "title": "Biz haqimizda",
+    "subtitle": "Soliq qaytarish xizmatlari uchun ishonchli hamkoringiz",
+    "description": "MultiLang Site ga xush kelibsiz, soliq qaytarish xizmatlari uchun ishonchli hamkoringiz. Biz shaxslar va oilalarga soliq qaytarishning murakkab jarayonini boshqarishda yordam berishda mutaxassislarmiz.",
+    "mission": "Bizning missiyamiz",
+    "missionText": "Har bir mijozga halollik, professionalizm va shaxsiy e'tibor bilan ajoyib soliq qaytarish xizmatlarini taqdim etish.",
+    "vision": "Bizning ko'zlagan maqsadimiz",
+    "visionText": "Bizning mutaxassisligimiz va mijoz muvaffaqiyatiga sadoqatimiz uchun tan olingan yetakchi soliq qaytarish xizmat ko'rsatuvchi provayder bo'lish.",
+    "services": "Bizning xizmatlarimiz",
+    "service1": "Daromad solig'i qaytarish",
+    "service2": "Uy ijarasi solig'i qaytarish",
+    "service3": "Oila solig'i qaytarish",
+    "service4": "Mutaxassis maslahati va yo'riqnomasi"
+  },
+  "ceoMessage": {
+    "title": "Bosh direktor xabari",
+    "greeting": "Hurmatli qadrli mijozlar va hamkorlar,",
+    "message1": "MultiLang Site ga xush kelibsiz. Men sizga soliq qaytarishning murakkabligini boshqarishda va foydangizni maksimal darajada oshirishda yordam berishga bag'ishlangan jamoani boshqarishdan faxrlanaman.",
+    "message2": "Bizning mukammallik, halollik va shaxsiy xizmatga sadoqatimiz bizni ajratib turadi. Biz har bir mijozning vaziyati noyob ekanligini tushunamiz va xizmatlarimizni sizning o'ziga xos ehtiyojlaringizga moslashtiramiz.",
+    "message3": "Soliq qaytarish ehtiyojlaringizda bizga ishonch bildirganingiz uchun tashakkur. Biz sizga xizmat qilish va moliyaviy maqsadlaringizga erishishda yordam berishni kutamiz.",
+    "signature": "Hurmat bilan,",
+    "ceoName": "Bosh direktor, MultiLang Site"
+  },
+  "contact": {
+    "title": "Biz bilan bog'lanish",
+    "subtitle": "Bizning ofisimiz bilan bog'laning",
+    "formTitle": "Ro'yxatdan o'tish formasi",
+    "formSubtitle": "Iltimos, * belgisi bilan belgilangan barcha majburiy maydonlarni to'ldiring",
+    "name": "To'liq ism",
+    "alienNumber": "Chet ellik ro'yxatdan o'tish raqami",
+    "passportNumber": "Pasport raqami",
+    "nationality": "Fuqarolik",
+    "phone": "Telefon raqami",
+    "serviceType": "Xizmat turi",
+    "message": "Qo'shimcha ma'lumot",
+    "submit": "Ro'yxatdan o'tishni yuborish",
+    "success": "Sizning ro'yxatdan o'tishingiz yuborildi. Rahmat!",
+    "error": "Yuborish muvaffaqiyatsiz bo'ldi. Iltimos, qayta urinib ko'ring."
+  },
+  "services": {
+    "incomeTax": "Daromad solig'i qaytarish",
+    "houseRent": "Uy ijarasi solig'i qaytarish",
+    "familyTax": "Oila solig'i qaytarish",
+    "other": "Boshqa"
+  },
+  "incomeTaxRefund": {
+    "title": "Daromad solig'i qaytarish",
+    "description": "Mutaxassislar jamoamiz bilan daromad solig'i qaytarishingizni tez va samarali qayta ishlash.",
+    "details": "Biz sizga murakkab soliq tizimini boshqarishda yordam beramiz va o'z huquqingiz bo'yicha maksimal qaytarish olishingizni ta'minlaymiz. Bizning tajribali mutaxassislarimiz sizni jarayonning har bir bosqichida yo'riqlaydi.",
+    "benefits": "Afzalliklar",
+    "benefit1": "Tez qayta ishlash vaqti",
+    "benefit2": "Mutaxassis yo'riqnomasi",
+    "benefit3": "Maksimal qaytarish kafolati",
+    "benefit4": "Shaxsiy xizmat"
+  },
+  "houseRentTaxRefund": {
+    "title": "Uy ijarasi solig'i qaytarish",
+    "description": "Mutaxassislar yordamimiz bilan uy ijarasi solig'i qaytarishingizni talab qiling.",
+    "details": "Biz ijara solig'i chegirmalarining murakkabligini tushunamiz va qaytarishingizni maksimal darajada oshirishga yordam beramiz. Bizning jamoamiz barcha tegishli xarajatlarning to'g'ri hujjatlashtirilgan va talab qilinganligini ta'minlaydi.",
+    "benefits": "Afzalliklar",
+    "benefit1": "Keng qamrovli hujjatlashtirish",
+    "benefit2": "Mutaxassis soliq maslahati",
+    "benefit3": "Maksimal chegirmalar",
+    "benefit4": "Maxsus qo'llab-quvvatlash"
+  },
+  "familyTaxRefund": {
+    "title": "Oila solig'i qaytarish",
+    "description": "Keng qamrovli xizmatlarimiz bilan oila solig'i qaytarish foydangizni maksimal darajada oshiring.",
+    "details": "Biz oilalarga soliq chegirmalari va kreditlarini boshqarishda yordam beramiz, siz o'z huquqingiz bo'yicha barcha foydalarni olishingizni ta'minlaymiz. Bizning xizmatlarimizga bolalar solig'i kreditlari, qaramog'idagilar uchun chegirmalar va boshqalar kiradi.",
+    "benefits": "Afzalliklar",
+    "benefit1": "Oilaga yo'naltirilgan mutaxassislik",
+    "benefit2": "Barcha tegishli kreditlar",
+    "benefit3": "Keng qamrovli ko'rib chiqish",
+    "benefit4": "Doimiy qo'llab-quvvatlash"
+  },
+  "visaChanges": {
+    "title": "Viza o'zgarishlari",
+    "description": "Viza holati o'zgarishlari va yangilanishlar bo'yicha mutaxassis yordami.",
+    "details": "Biz viza o'zgarishlari, holat yangilanishlari va tegishli hujjatlashtirish uchun keng qamrovli qo'llab-quvvatlashni taqdim etamiz. Bizning jamoamiz barcha hujjatlarning to'g'ri topshirilgan va qayta ishlanganligini ta'minlaydi.",
+    "services": "Bizning viza xizmatlarimiz",
+    "service1": "Viza holati o'zgarishlari",
+    "service2": "Hujjatlashtirish yordami",
+    "service3": "Ariza qo'llab-quvvatlash",
+    "service4": "Maslahat xizmatlari"
+  },
+  "jobSupport": {
+    "title": "Ish yordami",
+    "description": "Keng qamrovli ish qidirish va martaba qo'llab-quvvatlash xizmatlari.",
+    "details": "Biz sizga ish topishda yordam berish uchun turli xil xizmatlarni taklif qilamiz, jumladan rezyume yozish, suhbatga tayyorgarlik, ish qidirish yordami va martaba maslahati.",
+    "services": "Bizning ish qo'llab-quvvatlash xizmatlarimiz",
+    "service1": "Rezyume yozish va optimallashtirish",
+    "service2": "Suhbatga tayyorgarlik",
+    "service3": "Ish qidirish yordami",
+    "service4": "Martaba maslahati"
+  },
+  "supportedCountries": {
+    "title": "Qo'llab-quvvatlanadigan mamlakatlar",
+    "subtitle": "Biz quyidagi mamlakatlardan mijozlarga xizmatlar ko'rsatamiz",
+    "description": "Bizning ko'p tilli jamoamiz turli mamlakatlardan mijozlarga yordam berishga tayyor. Sizning mintaqangizda mavjud bo'lgan maxsus aloqa ma'lumotlari va xizmatlarni ko'rish uchun o'z mamlakatingizni tanlang."
+  }
+}

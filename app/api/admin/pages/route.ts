@@ -10,7 +10,7 @@ const pageSchema = z.object({
   title: z.string().min(1, 'Title is required').max(255).trim(),
   content: z.string().min(1, 'Content is required'),
   slug: z.string().min(1, 'Slug is required').max(255).trim(),
-  locale: z.enum(['en', 'ar', 'bn', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'zh']),
+  locale: z.enum(['en', 'ar', 'bn', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'zh', 'vi', 'th', 'km', 'id', 'ne', 'uz', 'fil', 'mn', 'ur', 'si', 'ta', 'my']),
   metaTitle: z.string().max(255).trim().optional(),
   metaDescription: z.string().max(500).trim().optional(),
   isActive: z.boolean().optional().default(true),

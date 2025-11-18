@@ -55,15 +55,27 @@ export default getRequestConfig(async ({ requestLocale }) => {
   // Try to get from database first
   let dbMessages = await getTranslationsFromDB(locale);
 
-  // If no DB translations or empty, fallback to JSON files
+  // Try to load JSON file as fallback or for merging
+  let jsonMessages: any = {};
+  try {
+    jsonMessages = (await import(`./messages/${locale}.json`)).default;
+  } catch (error) {
+    // If JSON file doesn't exist, try English as ultimate fallback
+    if (locale !== defaultLocale) {
+      try {
+        jsonMessages = (await import(`./messages/${defaultLocale}.json`)).default;
+      } catch (fallbackError) {
+        console.warn(`Could not load translations for locale: ${locale}`);
+      }
+    }
+  }
+
+  // If no DB translations or empty, use JSON files
   if (!dbMessages || Object.keys(dbMessages).length === 0) {
-    const jsonMessages = (await import(`./messages/${locale}.json`)).default;
-    
     // Merge: DB translations override JSON, but JSON fills in missing keys
     dbMessages = { ...jsonMessages, ...dbMessages };
   } else {
     // Merge with JSON fallback for missing keys
-    const jsonMessages = (await import(`./messages/${locale}.json`)).default;
     dbMessages = mergeDeep(jsonMessages, dbMessages);
   }
 

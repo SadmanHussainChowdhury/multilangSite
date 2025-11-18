@@ -1,0 +1,140 @@
+{
+  "common": {
+    "home": "Trang chủ",
+    "about": "Giới thiệu",
+    "contact": "Liên hệ",
+    "login": "Đăng nhập",
+    "logout": "Đăng xuất",
+    "register": "Đăng ký",
+    "dashboard": "Bảng điều khiển",
+    "admin": "Quản trị",
+    "submit": "Gửi",
+    "cancel": "Hủy",
+    "save": "Lưu",
+    "delete": "Xóa",
+    "edit": "Chỉnh sửa",
+    "back": "Quay lại",
+    "readMore": "Đọc thêm",
+    "getStarted": "Bắt đầu",
+    "learnMore": "Tìm hiểu thêm"
+  },
+  "nav": {
+    "aboutUs": "Về chúng tôi",
+    "about": "Giới thiệu",
+    "ceoMessage": "Thông điệp CEO",
+    "contactUs": "Liên hệ",
+    "taxRefund": "Hoàn thuế",
+    "incomeTaxRefund": "Hoàn thuế thu nhập",
+    "houseRentTaxRefund": "Hoàn thuế thuê nhà",
+    "familyTaxRefund": "Hoàn thuế gia đình",
+    "visaChanges": "Thay đổi visa",
+    "jobSupport": "Hỗ trợ việc làm",
+    "helpSupport": "Trợ giúp & Hỗ trợ"
+  },
+  "home": {
+    "title": "Chào mừng đến với MultiLang Site",
+    "subtitle": "Đối tác đáng tin cậy của bạn cho dịch vụ hoàn thuế",
+    "description": "Chúng tôi chuyên giúp các cá nhân và gia đình điều hướng quy trình phức tạp của việc hoàn thuế, đảm bảo bạn nhận được lợi ích tối đa mà bạn được hưởng."
+  },
+  "about": {
+    "title": "Về chúng tôi",
+    "subtitle": "Đối tác đáng tin cậy của bạn cho dịch vụ hoàn thuế",
+    "description": "Chào mừng đến với MultiLang Site, đối tác đáng tin cậy của bạn cho dịch vụ hoàn thuế. Chúng tôi chuyên giúp các cá nhân và gia đình điều hướng quy trình phức tạp của việc hoàn thuế, đảm bảo bạn nhận được lợi ích tối đa mà bạn được hưởng.",
+    "mission": "Sứ mệnh của chúng tôi",
+    "missionText": "Cung cấp dịch vụ hoàn thuế xuất sắc với sự chính trực, chuyên nghiệp và sự chú ý cá nhân hóa cho từng khách hàng.",
+    "vision": "Tầm nhìn của chúng tôi",
+    "visionText": "Trở thành nhà cung cấp dịch vụ hoàn thuế hàng đầu, được công nhận về chuyên môn và cam kết với thành công của khách hàng.",
+    "services": "Dịch vụ của chúng tôi",
+    "service1": "Hoàn thuế thu nhập",
+    "service2": "Hoàn thuế thuê nhà",
+    "service3": "Hoàn thuế gia đình",
+    "service4": "Tư vấn và hướng dẫn chuyên gia"
+  },
+  "ceoMessage": {
+    "title": "Thông điệp CEO",
+    "greeting": "Kính gửi Quý khách hàng và Đối tác,",
+    "message1": "Chào mừng đến với MultiLang Site. Tôi rất vinh dự được dẫn dắt một đội ngũ chuyên tâm giúp bạn điều hướng những phức tạp của việc hoàn thuế và tối đa hóa lợi ích của bạn.",
+    "message2": "Cam kết của chúng tôi về sự xuất sắc, chính trực và dịch vụ cá nhân hóa làm chúng tôi khác biệt. Chúng tôi hiểu rằng tình huống của mỗi khách hàng là duy nhất, và chúng tôi điều chỉnh dịch vụ của mình để đáp ứng nhu cầu cụ thể của bạn.",
+    "message3": "Cảm ơn bạn đã tin tưởng chúng tôi với nhu cầu hoàn thuế của bạn. Chúng tôi mong muốn được phục vụ bạn và giúp bạn đạt được mục tiêu tài chính của mình.",
+    "signature": "Trân trọng,",
+    "ceoName": "CEO, MultiLang Site"
+  },
+  "contact": {
+    "title": "Liên hệ với chúng tôi",
+    "subtitle": "Liên hệ với văn phòng của chúng tôi",
+    "formTitle": "Mẫu đăng ký",
+    "formSubtitle": "Vui lòng điền vào tất cả các trường bắt buộc được đánh dấu bằng *",
+    "name": "Họ và tên",
+    "alienNumber": "Số đăng ký người nước ngoài",
+    "passportNumber": "Số hộ chiếu",
+    "nationality": "Quốc tịch",
+    "phone": "Số điện thoại",
+    "serviceType": "Loại dịch vụ",
+    "message": "Thông tin bổ sung",
+    "submit": "Gửi đăng ký",
+    "success": "Đăng ký của bạn đã được gửi. Cảm ơn bạn!",
+    "error": "Gửi thất bại. Vui lòng thử lại."
+  },
+  "services": {
+    "incomeTax": "Hoàn thuế thu nhập",
+    "houseRent": "Hoàn thuế thuê nhà",
+    "familyTax": "Hoàn thuế gia đình",
+    "other": "Khác"
+  },
+  "incomeTaxRefund": {
+    "title": "Hoàn thuế thu nhập",
+    "description": "Nhận hoàn thuế thu nhập của bạn được xử lý nhanh chóng và hiệu quả với đội ngũ chuyên gia của chúng tôi.",
+    "details": "Chúng tôi giúp bạn điều hướng hệ thống thuế phức tạp và đảm bảo bạn nhận được khoản hoàn thuế tối đa mà bạn được hưởng. Các chuyên gia giàu kinh nghiệm của chúng tôi sẽ hướng dẫn bạn qua từng bước của quy trình.",
+    "benefits": "Lợi ích",
+    "benefit1": "Thời gian xử lý nhanh",
+    "benefit2": "Hướng dẫn chuyên gia",
+    "benefit3": "Đảm bảo hoàn thuế tối đa",
+    "benefit4": "Dịch vụ cá nhân hóa"
+  },
+  "houseRentTaxRefund": {
+    "title": "Hoàn thuế thuê nhà",
+    "description": "Yêu cầu hoàn thuế thuê nhà của bạn với sự hỗ trợ chuyên gia của chúng tôi.",
+    "details": "Chúng tôi hiểu những phức tạp của các khoản khấu trừ thuế cho thuê và sẽ giúp bạn tối đa hóa khoản hoàn thuế của bạn. Đội ngũ của chúng tôi đảm bảo tất cả các chi phí đủ điều kiện được ghi chép và yêu cầu đúng cách.",
+    "benefits": "Lợi ích",
+    "benefit1": "Tài liệu toàn diện",
+    "benefit2": "Tư vấn thuế chuyên gia",
+    "benefit3": "Khấu trừ tối đa",
+    "benefit4": "Hỗ trợ chuyên dụng"
+  },
+  "familyTaxRefund": {
+    "title": "Hoàn thuế gia đình",
+    "description": "Tối đa hóa lợi ích hoàn thuế gia đình của bạn với dịch vụ toàn diện của chúng tôi.",
+    "details": "Chúng tôi giúp các gia đình điều hướng các khoản khấu trừ và tín dụng thuế để đảm bảo bạn nhận được tất cả các lợi ích mà bạn được hưởng. Dịch vụ của chúng tôi bao gồm tín dụng thuế trẻ em, khấu trừ người phụ thuộc và nhiều hơn nữa.",
+    "benefits": "Lợi ích",
+    "benefit1": "Chuyên môn tập trung vào gia đình",
+    "benefit2": "Tất cả các tín dụng đủ điều kiện",
+    "benefit3": "Đánh giá toàn diện",
+    "benefit4": "Hỗ trợ liên tục"
+  },
+  "visaChanges": {
+    "title": "Thay đổi visa",
+    "description": "Hỗ trợ chuyên gia với thay đổi trạng thái visa và cập nhật.",
+    "details": "Chúng tôi cung cấp hỗ trợ toàn diện cho thay đổi visa, cập nhật trạng thái và tài liệu liên quan. Đội ngũ của chúng tôi đảm bảo tất cả giấy tờ được nộp và xử lý đúng cách.",
+    "services": "Dịch vụ Visa của chúng tôi",
+    "service1": "Thay đổi trạng thái visa",
+    "service2": "Hỗ trợ tài liệu",
+    "service3": "Hỗ trợ đơn",
+    "service4": "Dịch vụ tư vấn"
+  },
+  "jobSupport": {
+    "title": "Hỗ trợ việc làm",
+    "description": "Dịch vụ hỗ trợ tìm việc và nghề nghiệp toàn diện.",
+    "details": "Chúng tôi cung cấp một loạt dịch vụ để giúp bạn tìm việc làm, bao gồm viết sơ yếu lý lịch, chuẩn bị phỏng vấn, hỗ trợ tìm việc và tư vấn nghề nghiệp.",
+    "services": "Dịch vụ Hỗ trợ Việc làm của chúng tôi",
+    "service1": "Viết và tối ưu hóa sơ yếu lý lịch",
+    "service2": "Chuẩn bị phỏng vấn",
+    "service3": "Hỗ trợ tìm việc",
+    "service4": "Tư vấn nghề nghiệp"
+  },
+  "supportedCountries": {
+    "title": "Các quốc gia được hỗ trợ",
+    "subtitle": "Chúng tôi cung cấp dịch vụ cho khách hàng từ các quốc gia sau",
+    "description": "Đội ngũ đa ngôn ngữ của chúng tôi sẵn sàng hỗ trợ khách hàng từ nhiều quốc gia khác nhau. Chọn quốc gia của bạn để xem thông tin liên hệ cụ thể và dịch vụ có sẵn trong khu vực của bạn."
+  }
+}
+

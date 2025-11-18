@@ -4,11 +4,11 @@ import Registration from '@/models/Registration';
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
     await connectDB();
-    const { id } = await params;
+    const { id } = params;
 
     const registration = await Registration.findByIdAndDelete(id);
 

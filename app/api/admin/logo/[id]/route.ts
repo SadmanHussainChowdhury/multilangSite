@@ -6,7 +6,7 @@ import { z } from 'zod';
 const logoUpdateSchema = z.object({
   name: z.string().min(1).trim().optional(),
   imageUrl: z.string().url().trim().optional(),
-  altText: z.string().optional().trim(),
+  altText: z.string().trim().optional(),
   locale: z.enum(['en', 'ar', 'bn', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'zh']).optional(),
   isActive: z.boolean().optional(),
 });
@@ -14,10 +14,10 @@ const logoUpdateSchema = z.object({
 // GET - Get single logo
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
+    const { id } = params;
     await connectDB();
 
     const logo = await Logo.findById(id);
@@ -39,10 +39,10 @@ export async function GET(
 // PUT - Update logo
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
+    const { id } = params;
     const body = await request.json();
 
     const validatedData = logoUpdateSchema.parse(body);
@@ -82,10 +82,10 @@ export async function PUT(
 // DELETE - Delete logo
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
+    const { id } = params;
     await connectDB();
 
     const logo = await Logo.findByIdAndDelete(id);

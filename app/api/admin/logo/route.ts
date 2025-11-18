@@ -6,7 +6,7 @@ import { z } from 'zod';
 const logoSchema = z.object({
   name: z.string().min(1, 'Name is required').trim(),
   imageUrl: z.string().url('Valid image URL is required').trim(),
-  altText: z.string().optional().trim(),
+  altText: z.string().trim().optional(),
   locale: z.enum(['en', 'ar', 'bn', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'zh']).optional(),
   isActive: z.boolean().optional().default(true),
 });

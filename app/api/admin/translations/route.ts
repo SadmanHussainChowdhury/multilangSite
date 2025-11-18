@@ -7,7 +7,7 @@ const translationSchema = z.object({
   key: z.string().min(1, 'Key is required').trim(),
   locale: z.enum(['en', 'ar', 'bn', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'zh']),
   value: z.string().min(1, 'Value is required'),
-  namespace: z.string().optional().trim(),
+  namespace: z.string().trim().optional(),
 });
 
 // GET - Fetch all translations with filters

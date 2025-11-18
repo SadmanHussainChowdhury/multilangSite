@@ -7,16 +7,16 @@ const translationUpdateSchema = z.object({
   key: z.string().min(1).trim().optional(),
   locale: z.enum(['en', 'ar', 'bn', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'zh']).optional(),
   value: z.string().min(1).optional(),
-  namespace: z.string().optional().trim(),
+  namespace: z.string().trim().optional(),
 });
 
 // GET - Get single translation
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
+    const { id } = params;
     await connectDB();
 
     const translation = await Translation.findById(id);
@@ -38,10 +38,10 @@ export async function GET(
 // PUT - Update translation
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
+    const { id } = params;
     const body = await request.json();
 
     const validatedData = translationUpdateSchema.parse(body);
@@ -81,10 +81,10 @@ export async function PUT(
 // DELETE - Delete translation
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
+    const { id } = params;
     await connectDB();
 
     const translation = await Translation.findByIdAndDelete(id);

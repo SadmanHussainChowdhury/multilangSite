@@ -16,10 +16,10 @@ const pageSchema = z.object({
 // GET - Fetch a single page by ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
+    const { id } = params;
     await connectDB();
 
     const page = await Page.findOne({ _id: id, deletedAt: null });
@@ -41,10 +41,10 @@ export async function GET(
 // PUT - Update a page
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
+    const { id } = params;
     const body = await request.json();
 
     // Validate input
@@ -106,10 +106,10 @@ export async function PUT(
 // DELETE - Soft delete a page
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
+    const { id } = params;
     await connectDB();
 
     const page = await Page.findByIdAndUpdate(

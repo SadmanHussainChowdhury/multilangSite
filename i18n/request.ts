@@ -77,7 +77,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
 });
 
 // Deep merge function
-function mergeDeep(target: any, source: any): any {
+export function mergeDeep(target: any, source: any): any {
   const output = { ...target };
   if (isObject(target) && isObject(source)) {
     Object.keys(source).forEach((key) => {

@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Footer from '@/models/Footer';
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 // GET - Public API to fetch footer by locale
 export async function GET(request: NextRequest) {
   try {

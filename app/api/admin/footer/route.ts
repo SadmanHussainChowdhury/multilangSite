@@ -3,6 +3,9 @@ import connectDB from '@/lib/mongodb';
 import Footer from '@/models/Footer';
 import { z } from 'zod';
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 const footerSchema = z.object({
   locale: z.enum(['en', 'ar', 'bn', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'zh']),
   companyName: z.string().min(1, 'Company name is required').max(255).trim(),

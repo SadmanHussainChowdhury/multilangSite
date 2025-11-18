@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Translation from '@/models/Translation';
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 // GET - Fetch all translations for a locale
 export async function GET(request: NextRequest) {
   try {

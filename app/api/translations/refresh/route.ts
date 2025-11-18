@@ -3,6 +3,9 @@ import connectDB from '@/lib/mongodb';
 import Translation from '@/models/Translation';
 import { clearCache, setCachedTranslation } from '@/lib/translationCache';
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 // GET - Force refresh and return fresh translations for a locale
 export async function GET(request: NextRequest) {
   try {

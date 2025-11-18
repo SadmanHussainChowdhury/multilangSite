@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Page from '@/models/Page';
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 // Define all existing routes/slugs in the application
 const EXISTING_ROUTES = [
   { slug: 'home', name: 'Home Page', route: '/' },

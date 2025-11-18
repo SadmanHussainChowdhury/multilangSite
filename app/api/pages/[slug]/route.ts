@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Page from '@/models/Page';
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 // GET - Fetch a page by slug and locale (public API)
 export async function GET(
   request: NextRequest,

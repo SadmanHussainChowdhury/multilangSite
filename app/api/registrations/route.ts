@@ -3,6 +3,9 @@ import connectDB from '@/lib/mongodb';
 import Registration from '@/models/Registration';
 import { z } from 'zod';
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 const registrationSchema = z.object({
   name: z.string().min(1, 'Name is required').max(255).trim(),
   alien_number: z.string().min(1, 'Alien registration number is required').max(255).trim(),

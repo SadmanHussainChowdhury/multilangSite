@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Logo from '@/models/Logo';
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 // GET - Fetch active logo (public API)
 export async function GET(request: NextRequest) {
   try {

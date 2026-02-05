@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Translation from '@/models/Translation';
 import { z } from 'zod';
+import { requireAdmin } from '@/lib/admin-auth';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -19,6 +20,9 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
+    const authError = await requireAdmin(request);
+    if (authError) return authError;
+
     const { id } = params;
     await connectDB();
 
@@ -44,6 +48,9 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
+    const authError = await requireAdmin(request);
+    if (authError) return authError;
+
     const { id } = params;
     const body = await request.json();
 
@@ -87,6 +94,9 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
+    const authError = await requireAdmin(request);
+    if (authError) return authError;
+
     const { id } = params;
     await connectDB();
 

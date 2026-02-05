@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Registration from '@/models/Registration';
 import { z } from 'zod';
+import { requireAdmin } from '@/lib/admin-auth';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -20,7 +21,6 @@ const registrationSchema = z.object({
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    console.log('Received registration data:', body);
     
     // Clean up empty optional fields - convert empty strings to undefined
     const cleanedBody: any = {
@@ -34,16 +34,12 @@ export async function POST(request: NextRequest) {
       country: body.country?.trim() || undefined,
     };
     
-    console.log('Cleaned body:', cleanedBody);
-    
     // Validate input
     const validatedData = registrationSchema.parse(cleanedBody);
-    console.log('Validated data:', validatedData);
 
     // Connect to database
     try {
       await connectDB();
-      console.log('Database connected successfully');
     } catch (dbError) {
       console.error('Database connection error:', dbError);
       return NextResponse.json(
@@ -58,7 +54,6 @@ export async function POST(request: NextRequest) {
     // Create registration
     try {
       const registration = await Registration.create(validatedData);
-      console.log('Registration created successfully:', registration._id);
 
       return NextResponse.json(
         { message: 'Registration saved successfully', data: registration },
@@ -102,6 +97,9 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    const authError = await requireAdmin(request);
+    if (authError) return authError;
+
     await connectDB();
 
     const { searchParams } = new URL(request.url);
@@ -133,4 +131,3 @@ export async function GET(request: NextRequest) {
     );
   }
 }
-

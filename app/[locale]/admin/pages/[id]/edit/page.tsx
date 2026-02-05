@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import { toast } from 'sonner';
-import Navigation from '@/components/Navigation';
 import AdminNav from '@/components/AdminNav';
 
 interface Page {
@@ -121,7 +120,6 @@ export default function EditPagePage({ params }: { params: Promise<{ id: string 
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navigation />
       <AdminNav />
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">

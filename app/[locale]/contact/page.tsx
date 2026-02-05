@@ -66,8 +66,6 @@ export default function ContactPage() {
     }
 
     try {
-      console.log('Submitting registration:', formData);
-      
       const response = await fetch('/api/registrations', {
         method: 'POST',
         headers: {
@@ -76,9 +74,7 @@ export default function ContactPage() {
         body: JSON.stringify(formData),
       });
 
-      console.log('Response status:', response.status);
       const data = await response.json();
-      console.log('Response data:', data);
 
       if (response.ok) {
         toast.success(t('success'));

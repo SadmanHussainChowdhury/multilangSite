@@ -14,11 +14,12 @@ export default async function middleware(request: NextRequest) {
   // Handle locale routing first
   const response = intlMiddleware(request);
   
-  // Only check auth for dashboard routes (admin routes are now public)
+  // Protect dashboard and admin routes
   const pathname = request.nextUrl.pathname;
   const isDashboardRoute = pathname.includes('/dashboard');
+  const isAdminRoute = pathname.includes('/admin');
   
-  if (isDashboardRoute) {
+  if (isDashboardRoute || isAdminRoute) {
     const token = await getToken({ 
       req: request,
       secret: process.env.NEXTAUTH_SECRET 
@@ -29,6 +30,12 @@ export default async function middleware(request: NextRequest) {
       const locale = locales.find(loc => pathname.startsWith(`/${loc}/`)) || defaultLocale;
       const loginUrl = new URL(`/${locale}/auth/login`, request.url);
       return Response.redirect(loginUrl);
+    }
+
+    if (isAdminRoute && token.role !== 'admin') {
+      const locale = locales.find(loc => pathname.startsWith(`/${loc}/`)) || defaultLocale;
+      const homeUrl = new URL(`/${locale}`, request.url);
+      return Response.redirect(homeUrl);
     }
   }
   

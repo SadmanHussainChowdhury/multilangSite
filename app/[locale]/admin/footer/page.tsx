@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useLocale } from 'next-intl';
-import Navigation from '@/components/Navigation';
 import AdminNav from '@/components/AdminNav';
 
 interface FooterData {
@@ -182,7 +181,6 @@ export default function AdminFooterPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navigation />
       <AdminNav />
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">

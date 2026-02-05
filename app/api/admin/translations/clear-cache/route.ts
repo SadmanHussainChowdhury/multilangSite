@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { clearCache } from '@/lib/translationCache';
+import { requireAdmin } from '@/lib/admin-auth';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -7,6 +8,9 @@ export const dynamic = 'force-dynamic';
 // POST - Clear translation cache
 export async function POST(request: NextRequest) {
   try {
+    const authError = await requireAdmin(request);
+    if (authError) return authError;
+
     let locale: string | undefined;
     try {
       const body = await request.json();

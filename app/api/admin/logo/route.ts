@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Logo from '@/models/Logo';
 import { z } from 'zod';
+import { requireAdmin } from '@/lib/admin-auth';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -17,6 +18,9 @@ const logoSchema = z.object({
 // GET - Fetch all logos
 export async function GET(request: NextRequest) {
   try {
+    const authError = await requireAdmin(request);
+    if (authError) return authError;
+
     await connectDB();
 
     const logos = await Logo.find().sort({ createdAt: -1 });
@@ -34,6 +38,9 @@ export async function GET(request: NextRequest) {
 // POST - Create new logo
 export async function POST(request: NextRequest) {
   try {
+    const authError = await requireAdmin(request);
+    if (authError) return authError;
+
     const body = await request.json();
 
     // Validate input

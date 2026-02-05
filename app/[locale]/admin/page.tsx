@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import Link from 'next/link';
 import { useLocale } from 'next-intl';
-import Navigation from '@/components/Navigation';
 import AdminNav from '@/components/AdminNav';
 
 interface Stats {
@@ -67,7 +66,6 @@ export default function AdminDashboardPage() {
         <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float" style={{ animationDelay: '2s' }}></div>
       </div>
 
-      <Navigation />
       <AdminNav />
       <div className="container mx-auto px-4 py-8 relative z-10">
         <div className="mb-8 animate-fade-in">

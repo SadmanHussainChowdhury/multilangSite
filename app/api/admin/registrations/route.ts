@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Registration from '@/models/Registration';
+import { requireAdmin } from '@/lib/admin-auth';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   try {
+    const authError = await requireAdmin(request);
+    if (authError) return authError;
+
     await connectDB();
 
     const { searchParams } = new URL(request.url);
@@ -47,4 +51,3 @@ export async function GET(request: NextRequest) {
     );
   }
 }
-

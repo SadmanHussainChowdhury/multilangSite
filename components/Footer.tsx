@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useLocale } from 'next-intl';
+import { usePathname } from 'next/navigation';
 
 interface FooterData {
   companyName: string;
@@ -35,6 +36,7 @@ interface Logo {
 
 export default function Footer() {
   const locale = useLocale();
+  const pathname = usePathname();
   const [footerData, setFooterData] = useState<FooterData | null>(null);
   const [logo, setLogo] = useState<Logo | null>(null);
   const [loading, setLoading] = useState(true);
@@ -79,6 +81,10 @@ export default function Footer() {
       setLoading(false);
     }
   };
+
+  if (pathname.includes('/admin')) {
+    return null;
+  }
 
   if (loading) {
     return null;

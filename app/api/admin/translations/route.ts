@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Translation from '@/models/Translation';
 import { z } from 'zod';
+import { requireAdmin } from '@/lib/admin-auth';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -16,6 +17,9 @@ const translationSchema = z.object({
 // GET - Fetch all translations with filters
 export async function GET(request: NextRequest) {
   try {
+    const authError = await requireAdmin(request);
+    if (authError) return authError;
+
     const { searchParams } = new URL(request.url);
     const locale = searchParams.get('locale');
     const namespace = searchParams.get('namespace');
@@ -48,6 +52,9 @@ export async function GET(request: NextRequest) {
 // POST - Create or update translation
 export async function POST(request: NextRequest) {
   try {
+    const authError = await requireAdmin(request);
+    if (authError) return authError;
+
     const body = await request.json();
 
     // Handle bulk updates
@@ -106,4 +113,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-

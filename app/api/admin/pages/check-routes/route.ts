@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Page from '@/models/Page';
+import { requireAdmin } from '@/lib/admin-auth';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -21,6 +22,9 @@ const EXISTING_ROUTES = [
 // GET - Check which routes have pages in database
 export async function GET(request: NextRequest) {
   try {
+    const authError = await requireAdmin(request);
+    if (authError) return authError;
+
     const { searchParams } = new URL(request.url);
     const locale = searchParams.get('locale') || 'en';
 
@@ -63,4 +67,3 @@ export async function GET(request: NextRequest) {
     );
   }
 }
-

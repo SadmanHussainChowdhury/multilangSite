@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Footer from '@/models/Footer';
 import { z } from 'zod';
+import { requireAdmin } from '@/lib/admin-auth';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -35,6 +36,9 @@ const footerSchema = z.object({
 // GET - Fetch footer by locale
 export async function GET(request: NextRequest) {
   try {
+    const authError = await requireAdmin(request);
+    if (authError) return authError;
+
     await connectDB();
 
     const { searchParams } = new URL(request.url);
@@ -59,6 +63,9 @@ export async function GET(request: NextRequest) {
 // POST - Create or update footer
 export async function POST(request: NextRequest) {
   try {
+    const authError = await requireAdmin(request);
+    if (authError) return authError;
+
     const body = await request.json();
 
     // Clean up empty social links
@@ -107,4 +114,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-

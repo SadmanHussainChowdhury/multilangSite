@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useTranslations, useLocale } from 'next-intl';
 import { useState, useEffect } from 'react';
 import LanguageSwitcher from './LanguageSwitcher';
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 
 interface Logo {
   imageUrl: string;
@@ -124,6 +124,22 @@ export default function Navigation() {
             <Link href={`/${locale}/supported-countries`} className="text-slate-700 font-medium hover:text-blue-600 transition-all duration-300 hover:scale-105">
               {t('helpSupport')}
             </Link>
+            {status === 'authenticated' ? (
+              <button
+                type="button"
+                onClick={() => signOut({ callbackUrl: `/${locale}` })}
+                className="px-4 py-2 border border-blue-200 text-blue-700 font-semibold rounded-lg hover:bg-blue-50 transition-all duration-300 hover:scale-105"
+              >
+                Sign out
+              </button>
+            ) : (
+              <Link
+                href={`/${locale}/auth/login`}
+                className="px-4 py-2 border border-blue-200 text-blue-700 font-semibold rounded-lg hover:bg-blue-50 transition-all duration-300 hover:scale-105"
+              >
+                Sign in
+              </Link>
+            )}
             {status === 'authenticated' && session?.user?.role === 'admin' && (
               <Link
                 href={`/${locale}/admin`}
@@ -186,6 +202,19 @@ export default function Navigation() {
               {status === 'authenticated' && session?.user?.role === 'admin' && (
                 <Link href={`/${locale}/admin`} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 font-semibold">
                   Admin Panel
+                </Link>
+              )}
+              {status === 'authenticated' ? (
+                <button
+                  type="button"
+                  onClick={() => signOut({ callbackUrl: `/${locale}` })}
+                  className="w-full text-left block px-4 py-2 text-gray-700 hover:bg-gray-100 font-semibold"
+                >
+                  Sign out
+                </button>
+              ) : (
+                <Link href={`/${locale}/auth/login`} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 font-semibold">
+                  Sign in
                 </Link>
               )}
               <div className="px-4 py-2">

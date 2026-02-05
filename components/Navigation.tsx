@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useTranslations, useLocale } from 'next-intl';
 import { useState, useEffect } from 'react';
 import LanguageSwitcher from './LanguageSwitcher';
+import { useSession } from 'next-auth/react';
 
 interface Logo {
   imageUrl: string;
@@ -13,6 +14,7 @@ interface Logo {
 export default function Navigation() {
   const t = useTranslations('nav');
   const locale = useLocale();
+  const { data: session, status } = useSession();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [logo, setLogo] = useState<Logo | null>(null);
   const [logoLoading, setLogoLoading] = useState(true);
@@ -122,9 +124,14 @@ export default function Navigation() {
             <Link href={`/${locale}/supported-countries`} className="text-slate-700 font-medium hover:text-blue-600 transition-all duration-300 hover:scale-105">
               {t('helpSupport')}
             </Link>
-            <Link href={`/${locale}/admin`} className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 premium-shadow hover:scale-105">
-              Admin
-            </Link>
+            {status === 'authenticated' && session?.user?.role === 'admin' && (
+              <Link
+                href={`/${locale}/admin`}
+                className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 premium-shadow hover:scale-105"
+              >
+                Admin
+              </Link>
+            )}
             <LanguageSwitcher />
           </div>
 
@@ -176,9 +183,11 @@ export default function Navigation() {
               <Link href={`/${locale}/supported-countries`} className="block px-4 py-2 text-gray-700 hover:bg-gray-100">
                 {t('helpSupport')}
               </Link>
-              <Link href={`/${locale}/admin`} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 font-semibold">
-                Admin Panel
-              </Link>
+              {status === 'authenticated' && session?.user?.role === 'admin' && (
+                <Link href={`/${locale}/admin`} className="block px-4 py-2 text-gray-700 hover:bg-gray-100 font-semibold">
+                  Admin Panel
+                </Link>
+              )}
               <div className="px-4 py-2">
                 <LanguageSwitcher />
               </div>

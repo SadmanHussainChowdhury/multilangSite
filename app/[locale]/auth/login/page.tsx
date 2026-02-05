@@ -2,11 +2,14 @@
 
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
+import { useLocale } from 'next-intl';
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const locale = useLocale();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -18,9 +21,11 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
+      const callbackUrl = searchParams.get('callbackUrl') || `/${locale}/admin`;
       const result = await signIn('credentials', {
         email: formData.email,
         password: formData.password,
+        callbackUrl,
         redirect: false,
       });
 
@@ -28,7 +33,7 @@ export default function LoginPage() {
         toast.error('Invalid email or password');
       } else {
         toast.success('Login successful');
-        router.push('/dashboard');
+        router.push(callbackUrl);
       }
     } catch (error) {
       toast.error('Login failed');

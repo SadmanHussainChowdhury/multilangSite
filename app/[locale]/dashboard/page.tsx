@@ -2,11 +2,13 @@
 
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { useLocale } from 'next-intl';
 import Link from 'next/link';
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const locale = useLocale();
 
   if (status === 'loading') {
     return (
@@ -17,7 +19,7 @@ export default function DashboardPage() {
   }
 
   if (status === 'unauthenticated') {
-    router.push('/auth/login');
+    router.push(`/${locale}/auth/login`);
     return null;
   }
 
@@ -31,7 +33,7 @@ export default function DashboardPage() {
               <span className="text-gray-700">Welcome, {session?.user?.name}</span>
               {session?.user?.role === 'admin' && (
                 <Link
-                  href="/admin/registrations"
+                  href={`/${locale}/admin/registrations`}
                   className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
                 >
                   Admin Panel
@@ -53,13 +55,13 @@ export default function DashboardPage() {
           </p>
           <div className="flex gap-4">
             <Link
-              href="/contact"
+              href={`/${locale}/contact`}
               className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
             >
               Contact Us
             </Link>
             <Link
-              href="/"
+              href={`/${locale}`}
               className="bg-gray-200 text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-300"
             >
               Back to Home

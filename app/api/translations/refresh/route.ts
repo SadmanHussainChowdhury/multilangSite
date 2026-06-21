@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Translation from '@/models/Translation';
 import { clearCache, setCachedTranslation } from '@/lib/translationCache';
+import { requireAdmin } from '@/lib/admin-auth';
+import { locales } from '@/i18n/config';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -9,9 +11,16 @@ export const dynamic = 'force-dynamic';
 // GET - Force refresh and return fresh translations for a locale
 export async function GET(request: NextRequest) {
   try {
+    const authError = await requireAdmin(request);
+    if (authError) return authError;
+
     const { searchParams } = new URL(request.url);
     const locale = searchParams.get('locale') || 'en';
     const forceRefresh = searchParams.get('force') === 'true';
+
+    if (!locales.includes(locale as any)) {
+      return NextResponse.json({ message: 'Invalid locale' }, { status: 400 });
+    }
 
     if (forceRefresh) {
       // Clear cache first

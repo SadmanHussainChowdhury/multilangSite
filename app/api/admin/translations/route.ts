@@ -3,16 +3,21 @@ import connectDB from '@/lib/mongodb';
 import Translation from '@/models/Translation';
 import { z } from 'zod';
 import { requireAdmin } from '@/lib/admin-auth';
+import { locales } from '@/i18n/config';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 
 const translationSchema = z.object({
   key: z.string().min(1, 'Key is required').trim(),
-  locale: z.enum(['en', 'ar', 'bn', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'zh', 'vi', 'th', 'km', 'id', 'ne', 'uz', 'fil', 'mn', 'ur', 'si', 'ta', 'my']),
+  locale: z.enum(['vi', 'id', 'uz', 'mn', 'ne', 'my', 'si', 'bn', 'fil', 'km', 'th', 'en', 'ko']),
   value: z.string().min(1, 'Value is required'),
   namespace: z.string().trim().optional(),
 });
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
 
 // GET - Fetch all translations with filters
 export async function GET(request: NextRequest) {
@@ -28,12 +33,18 @@ export async function GET(request: NextRequest) {
     await connectDB();
 
     const query: any = {};
-    if (locale) query.locale = locale;
+    if (locale) {
+      if (!locales.includes(locale as any)) {
+        return NextResponse.json({ message: 'Invalid locale' }, { status: 400 });
+      }
+      query.locale = locale;
+    }
     if (namespace) query.namespace = namespace;
     if (search) {
+      const escapedSearch = escapeRegExp(search);
       query.$or = [
-        { key: { $regex: search, $options: 'i' } },
-        { value: { $regex: search, $options: 'i' } },
+        { key: { $regex: escapedSearch, $options: 'i' } },
+        { value: { $regex: escapedSearch, $options: 'i' } },
       ];
     }
 

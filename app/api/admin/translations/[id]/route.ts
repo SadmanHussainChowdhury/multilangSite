@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
 
 const translationUpdateSchema = z.object({
   key: z.string().min(1).trim().optional(),
-  locale: z.enum(['en', 'ar', 'bn', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'zh', 'vi', 'th', 'km', 'id', 'ne', 'uz', 'fil', 'mn', 'ur', 'si', 'ta', 'my']).optional(),
+  locale: z.enum(['vi', 'id', 'uz', 'mn', 'ne', 'my', 'si', 'bn', 'fil', 'km', 'th', 'en', 'ko']).optional(),
   value: z.string().min(1).optional(),
   namespace: z.string().trim().optional(),
 });
@@ -56,6 +56,26 @@ export async function PUT(
 
     const validatedData = translationUpdateSchema.parse(body);
     await connectDB();
+
+    const existingTranslation = await Translation.findById(id);
+
+    if (!existingTranslation) {
+      return NextResponse.json({ message: 'Translation not found' }, { status: 404 });
+    }
+
+    const updateQuery: any = { _id: { $ne: id } };
+    if (validatedData.key || validatedData.locale) {
+      updateQuery.key = validatedData.key || existingTranslation.key;
+      updateQuery.locale = validatedData.locale || existingTranslation.locale;
+
+      const duplicate = await Translation.findOne(updateQuery);
+      if (duplicate) {
+        return NextResponse.json(
+          { message: 'Translation with this key and locale already exists' },
+          { status: 400 }
+        );
+      }
+    }
 
     const translation = await Translation.findByIdAndUpdate(id, validatedData, {
       new: true,

@@ -3,6 +3,7 @@ import connectDB from '@/lib/mongodb';
 import Page from '@/models/Page';
 import { z } from 'zod';
 import { requireAdmin } from '@/lib/admin-auth';
+import { locales } from '@/i18n/config';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -11,7 +12,7 @@ const pageSchema = z.object({
   title: z.string().min(1, 'Title is required').max(255).trim(),
   content: z.string().min(1, 'Content is required'),
   slug: z.string().min(1, 'Slug is required').max(255).trim(),
-  locale: z.enum(['en', 'ar', 'bn', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'zh', 'vi', 'th', 'km', 'id', 'ne', 'uz', 'fil', 'mn', 'ur', 'si', 'ta', 'my']),
+  locale: z.enum(['vi', 'id', 'uz', 'mn', 'ne', 'my', 'si', 'bn', 'fil', 'km', 'th', 'en', 'ko']),
   metaTitle: z.string().max(255).trim().optional(),
   metaDescription: z.string().max(500).trim().optional(),
   isActive: z.boolean().optional().default(true),
@@ -26,14 +27,19 @@ export async function GET(request: NextRequest) {
     await connectDB();
 
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '20');
+    const page = Math.max(1, Number.parseInt(searchParams.get('page') || '1', 10) || 1);
+    const limit = Math.min(100, Math.max(1, Number.parseInt(searchParams.get('limit') || '20', 10) || 1));
     const skip = (page - 1) * limit;
     const locale = searchParams.get('locale');
     const slug = searchParams.get('slug');
 
     const query: any = { deletedAt: null };
-    if (locale) query.locale = locale;
+    if (locale) {
+      if (!locales.includes(locale as any)) {
+        return NextResponse.json({ message: 'Invalid locale' }, { status: 400 });
+      }
+      query.locale = locale;
+    }
     if (slug) query.slug = slug;
 
     const pages = await Page.find(query)

@@ -14,10 +14,14 @@ export async function GET(request: NextRequest) {
     await connectDB();
 
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '10');
+    const page = Math.max(1, Number.parseInt(searchParams.get('page') || '1', 10) || 1);
+    const limit = Math.min(100, Math.max(1, Number.parseInt(searchParams.get('limit') || '10', 10) || 1));
     const skip = (page - 1) * limit;
     const visaType = searchParams.get('visa_type');
+
+    if (visaType && visaType !== 'all' && !['income_tax', 'house_rent', 'family_tax', 'other'].includes(visaType)) {
+      return NextResponse.json({ message: 'Invalid service type' }, { status: 400 });
+    }
 
     // Build query
     const query: any = {};

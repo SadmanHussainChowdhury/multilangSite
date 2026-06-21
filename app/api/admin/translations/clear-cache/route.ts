@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { clearCache } from '@/lib/translationCache';
 import { requireAdmin } from '@/lib/admin-auth';
+import { locales } from '@/i18n/config';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -19,13 +20,19 @@ export async function POST(request: NextRequest) {
       // Empty body is fine
     }
 
-    clearCache(locale);
+    const validLocale = locales.find((item) => item === locale);
+
+    if (locale && !validLocale) {
+      return NextResponse.json({ message: 'Invalid locale' }, { status: 400 });
+    }
+
+    clearCache(validLocale);
 
     return NextResponse.json({
       message: locale ? `Cache cleared for ${locale}` : 'All cache cleared',
     });
-  } catch (error) {
-    console.error('Clear cache error:', error);
+  } catch {
+    console.error('Clear cache error');
     return NextResponse.json(
       { message: 'Failed to clear cache' },
       { status: 500 }

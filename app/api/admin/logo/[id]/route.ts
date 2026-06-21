@@ -7,11 +7,19 @@ import { requireAdmin } from '@/lib/admin-auth';
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 
+const imageUrlSchema = z
+  .string()
+  .trim()
+  .refine(
+    (value) => /^https?:\/\/|^data:image\/(png|jpeg|jpg|gif|webp|svg\+xml);base64,/i.test(value),
+    'Valid image URL or base64 image data is required'
+  );
+
 const logoUpdateSchema = z.object({
   name: z.string().min(1).trim().optional(),
-  imageUrl: z.string().url().trim().optional(),
+  imageUrl: imageUrlSchema.optional(),
   altText: z.string().trim().optional(),
-  locale: z.enum(['en', 'ar', 'bn', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'zh', 'vi', 'th', 'km', 'id', 'ne', 'uz', 'fil', 'mn', 'ur', 'si', 'ta', 'my']).optional(),
+  locale: z.enum(['vi', 'id', 'uz', 'mn', 'ne', 'my', 'si', 'bn', 'fil', 'km', 'th', 'en', 'ko']).optional(),
   isActive: z.boolean().optional(),
 });
 

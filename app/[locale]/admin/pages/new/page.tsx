@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import { toast } from 'sonner';
 import AdminNav from '@/components/AdminNav';
+import { locales, localeNames } from '@/i18n/config';
 
 export default function NewPagePage() {
   const router = useRouter();
@@ -119,7 +120,7 @@ export default function NewPagePage() {
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="page-url-slug"
                 />
-                <p className="mt-1 text-sm text-gray-500">URL-friendly identifier (e.g., "about-us", "contact")</p>
+                <p className="mt-1 text-sm text-gray-500">URL-friendly identifier (e.g., &quot;about-us&quot;, &quot;contact&quot;)</p>
               </div>
 
               <div className="grid md:grid-cols-2 gap-6">
@@ -135,17 +136,11 @@ export default function NewPagePage() {
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
-                    <option value="en">English</option>
-                    <option value="ar">Arabic</option>
-                    <option value="bn">Bengali</option>
-                    <option value="es">Spanish</option>
-                    <option value="fr">French</option>
-                    <option value="de">German</option>
-                    <option value="it">Italian</option>
-                    <option value="pt">Portuguese</option>
-                    <option value="ru">Russian</option>
-                    <option value="ja">Japanese</option>
-                    <option value="zh">Chinese</option>
+                    {locales.map((loc) => (
+                      <option key={loc} value={loc}>
+                        {localeNames[loc]}
+                      </option>
+                    ))}
                   </select>
                 </div>
 

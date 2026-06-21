@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useLocale } from 'next-intl';
 import Navigation from '@/components/Navigation';
 import { usePageContent } from '@/hooks/usePageContent';
+import { sanitizeHtmlContent } from '@/lib/sanitizeHtml';
 
 export default function HomePage() {
   const t = useTranslations('common');
@@ -31,7 +32,7 @@ export default function HomePage() {
   }
 
   const title = pageContent?.title || tHome('title');
-  const heroContent = pageContent?.content || fallbackContent;
+  const heroContent = sanitizeHtmlContent(pageContent?.content || fallbackContent);
 
   return (
     <div className="min-h-screen relative overflow-hidden">

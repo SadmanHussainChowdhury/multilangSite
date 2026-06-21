@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import { toast } from 'sonner';
 import AdminNav from '@/components/AdminNav';
+import { locales, localeNames } from '@/i18n/config';
 
 interface Page {
   _id: string;
@@ -33,11 +34,7 @@ export default function EditPagePage({ params }: { params: Promise<{ id: string 
     isActive: true,
   });
 
-  useEffect(() => {
-    loadPage();
-  }, []);
-
-  const loadPage = async () => {
+  const loadPage = useCallback(async () => {
     try {
       const resolvedParams = await params;
       setPageId(resolvedParams.id);
@@ -66,7 +63,11 @@ export default function EditPagePage({ params }: { params: Promise<{ id: string 
     } finally {
       setLoading(false);
     }
-  };
+  }, [locale, params, router]);
+
+  useEffect(() => {
+    loadPage();
+  }, [loadPage]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -173,17 +174,11 @@ export default function EditPagePage({ params }: { params: Promise<{ id: string 
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
-                    <option value="en">English</option>
-                    <option value="ar">Arabic</option>
-                    <option value="bn">Bengali</option>
-                    <option value="es">Spanish</option>
-                    <option value="fr">French</option>
-                    <option value="de">German</option>
-                    <option value="it">Italian</option>
-                    <option value="pt">Portuguese</option>
-                    <option value="ru">Russian</option>
-                    <option value="ja">Japanese</option>
-                    <option value="zh">Chinese</option>
+                    {locales.map((loc) => (
+                      <option key={loc} value={loc}>
+                        {localeNames[loc]}
+                      </option>
+                    ))}
                   </select>
                 </div>
 

@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useLocale } from 'next-intl';
 import AdminNav from '@/components/AdminNav';
+import { locales, localeNames } from '@/i18n/config';
 
 interface FooterData {
   locale: string;
@@ -55,11 +56,7 @@ export default function AdminFooterPage() {
     isActive: true,
   });
 
-  useEffect(() => {
-    fetchFooter();
-  }, [locale]);
-
-  const fetchFooter = async () => {
+  const fetchFooter = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch(`/api/admin/footer?locale=${locale}`);
@@ -79,18 +76,21 @@ export default function AdminFooterPage() {
           },
         });
       } else {
-        // Initialize with default values
-        setFormData({
-          ...formData,
-          locale: locale,
-        });
+        setFormData((current) => ({
+          ...current,
+          locale,
+        }));
       }
     } catch (error) {
       toast.error('Error loading footer');
     } finally {
       setLoading(false);
     }
-  };
+  }, [locale]);
+
+  useEffect(() => {
+    fetchFooter();
+  }, [fetchFooter, locale]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -218,17 +218,11 @@ export default function AdminFooterPage() {
                       onChange={(e) => setFormData({ ...formData, locale: e.target.value })}
                       className="w-full px-5 py-4 border-2 border-slate-200 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all duration-300 bg-white/50 backdrop-blur-sm"
                     >
-                      <option value="en">English</option>
-                      <option value="ar">Arabic</option>
-                      <option value="bn">Bengali</option>
-                      <option value="es">Spanish</option>
-                      <option value="fr">French</option>
-                      <option value="de">German</option>
-                      <option value="it">Italian</option>
-                      <option value="pt">Portuguese</option>
-                      <option value="ru">Russian</option>
-                      <option value="ja">Japanese</option>
-                      <option value="zh">Chinese</option>
+                      {locales.map((loc) => (
+                        <option key={loc} value={loc}>
+                          {localeNames[loc]}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </div>

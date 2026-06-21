@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useTranslations, useLocale } from 'next-intl';
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useSession, signOut } from 'next-auth/react';
 
@@ -19,11 +19,7 @@ export default function Navigation() {
   const [logo, setLogo] = useState<Logo | null>(null);
   const [logoLoading, setLogoLoading] = useState(true);
 
-  useEffect(() => {
-    fetchLogo();
-  }, [locale]);
-
-  const fetchLogo = async () => {
+  const fetchLogo = useCallback(async () => {
     try {
       setLogoLoading(true);
       const response = await fetch(`/api/logo?locale=${locale}`);
@@ -40,7 +36,11 @@ export default function Navigation() {
     } finally {
       setLogoLoading(false);
     }
-  };
+  }, [locale]);
+
+  useEffect(() => {
+    fetchLogo();
+  }, [fetchLogo]);
 
   return (
     <nav className="glass sticky top-0 z-50 border-b border-white/20 premium-shadow">
@@ -54,12 +54,8 @@ export default function Navigation() {
                 src={logo.imageUrl}
                 alt={logo.altText || 'Logo'}
                 className="h-12 w-auto object-contain"
-                onError={(e) => {
-                  // Fallback to text if image fails to load
-                  const parent = (e.target as HTMLImageElement).parentElement;
-                  if (parent) {
-                    parent.innerHTML = '<span class="text-3xl font-extrabold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">MultiLang Site</span>';
-                  }
+                onError={() => {
+                  setLogo(null);
                 }}
               />
             ) : (

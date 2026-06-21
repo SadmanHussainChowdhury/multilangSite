@@ -19,7 +19,7 @@ const TranslationSchema = new Schema<ITranslation>(
     locale: {
       type: String,
       required: [true, 'Locale is required'],
-      enum: ['en', 'ar', 'bn', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'zh', 'vi', 'th', 'km', 'id', 'ne', 'uz', 'fil', 'mn', 'ur', 'si', 'ta', 'my'],
+      enum: ['vi', 'id', 'uz', 'mn', 'ne', 'my', 'si', 'bn', 'fil', 'km', 'th', 'en', 'ko'],
     },
     value: {
       type: String,

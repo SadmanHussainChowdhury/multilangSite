@@ -40,12 +40,11 @@ export async function POST(request: NextRequest) {
     // Connect to database
     try {
       await connectDB();
-    } catch (dbError) {
-      console.error('Database connection error:', dbError);
+    } catch {
+      console.error('Database connection error');
       return NextResponse.json(
         { 
-          message: 'Database connection failed. Please check your MongoDB connection.',
-          error: dbError instanceof Error ? dbError.message : 'Unknown database error'
+          message: 'Database connection failed. Please check your MongoDB connection.'
         },
         { status: 500 }
       );
@@ -59,12 +58,11 @@ export async function POST(request: NextRequest) {
         { message: 'Registration saved successfully', data: registration },
         { status: 201 }
       );
-    } catch (createError: any) {
-      console.error('Registration creation error:', createError);
+    } catch {
+      console.error('Registration creation error');
       return NextResponse.json(
         { 
-          message: 'Failed to save registration',
-          error: createError.message || 'Unknown error'
+          message: 'Failed to save registration'
         },
         { status: 500 }
       );
@@ -87,8 +85,7 @@ export async function POST(request: NextRequest) {
     console.error('Registration error:', error);
     return NextResponse.json(
       { 
-        message: 'Failed to save registration. Please try again later.',
-        error: error instanceof Error ? error.message : 'Unknown error'
+        message: 'Failed to save registration. Please try again later.'
       },
       { status: 500 }
     );
@@ -103,16 +100,26 @@ export async function GET(request: NextRequest) {
     await connectDB();
 
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '10');
+    const page = Math.max(1, Number.parseInt(searchParams.get('page') || '1', 10) || 1);
+    const limit = Math.min(100, Math.max(1, Number.parseInt(searchParams.get('limit') || '10', 10) || 1));
     const skip = (page - 1) * limit;
+    const visaType = searchParams.get('visa_type');
 
-    const registrations = await Registration.find()
+    if (visaType && visaType !== 'all' && !['income_tax', 'house_rent', 'family_tax', 'other'].includes(visaType)) {
+      return NextResponse.json({ message: 'Invalid service type' }, { status: 400 });
+    }
+
+    const query: any = {};
+    if (visaType && visaType !== 'all') {
+      query.visa_type = visaType;
+    }
+
+    const registrations = await Registration.find(query)
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
 
-    const total = await Registration.countDocuments();
+    const total = await Registration.countDocuments(query);
 
     return NextResponse.json({
       data: registrations,

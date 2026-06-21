@@ -5,6 +5,7 @@ import Navigation from '@/components/Navigation';
 import Link from 'next/link';
 import { useLocale } from 'next-intl';
 import { usePageContent } from '@/hooks/usePageContent';
+import { sanitizeHtmlContent } from '@/lib/sanitizeHtml';
 
 export default function JobSupportPage() {
   const t = useTranslations('jobSupport');
@@ -30,7 +31,7 @@ export default function JobSupportPage() {
   }
 
   const title = pageContent?.title || t('title');
-  const content = pageContent?.content || fallbackContent;
+  const content = sanitizeHtmlContent(pageContent?.content || fallbackContent);
 
   return (
     <div className="min-h-screen bg-gray-50">

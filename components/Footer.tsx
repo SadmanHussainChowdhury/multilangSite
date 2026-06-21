@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useLocale } from 'next-intl';
 import { usePathname } from 'next/navigation';
@@ -41,11 +41,7 @@ export default function Footer() {
   const [logo, setLogo] = useState<Logo | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchFooter();
-  }, [locale]);
-
-  const fetchFooter = async () => {
+  const fetchFooter = useCallback(async () => {
     try {
       setLoading(true);
       const [footerResponse, logoResponse] = await Promise.all([
@@ -80,7 +76,11 @@ export default function Footer() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [locale]);
+
+  useEffect(() => {
+    fetchFooter();
+  }, [fetchFooter]);
 
   if (pathname.includes('/admin')) {
     return null;
@@ -111,12 +111,8 @@ export default function Footer() {
                     src={logo.imageUrl}
                     alt={logo.altText || footerData.companyName}
                     className="h-12 w-auto object-contain"
-                    onError={(e) => {
-                      // Fallback to text if image fails
-                      const parent = (e.target as HTMLImageElement).parentElement;
-                      if (parent) {
-                        parent.innerHTML = `<h3 class="text-2xl font-extrabold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">${footerData.companyName}</h3>`;
-                      }
+                    onError={() => {
+                      setLogo(null);
                     }}
                   />
                 ) : (

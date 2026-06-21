@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 import Navigation from '@/components/Navigation';
 import { usePageContent } from '@/hooks/usePageContent';
+import { sanitizeHtmlContent } from '@/lib/sanitizeHtml';
 
 const defaultCountries = [
   { code: 'CN', name: 'China', flag: '🇨🇳' },
@@ -42,7 +43,7 @@ export default function SupportedCountriesPage() {
   }
 
   const title = pageContent?.title || t('title');
-  const content = pageContent?.content || fallbackContent;
+  const content = sanitizeHtmlContent(pageContent?.content || fallbackContent);
 
   return (
     <div className="min-h-screen relative overflow-hidden">

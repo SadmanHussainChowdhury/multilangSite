@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useLocale } from 'next-intl';
 import AdminNav from '@/components/AdminNav';
+import { locales, localeNames } from '@/i18n/config';
 
 interface Logo {
   _id: string;
@@ -33,11 +34,7 @@ export default function AdminLogoPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
 
-  useEffect(() => {
-    fetchLogos();
-  }, []);
-
-  const fetchLogos = async () => {
+  const fetchLogos = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch('/api/admin/logo');
@@ -53,7 +50,11 @@ export default function AdminLogoPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchLogos();
+  }, [fetchLogos]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -431,20 +432,14 @@ export default function AdminLogoPage() {
                   className="w-full px-5 py-3 glass border-2 border-white/30 rounded-xl focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all duration-300 bg-white/50 backdrop-blur-sm hover:border-blue-300"
                 >
                   <option value="en">Default (All Languages)</option>
-                  <option value="en">English</option>
-                  <option value="ar">Arabic</option>
-                  <option value="bn">Bengali</option>
-                  <option value="es">Spanish</option>
-                  <option value="fr">French</option>
-                  <option value="de">German</option>
-                  <option value="it">Italian</option>
-                  <option value="pt">Portuguese</option>
-                  <option value="ru">Russian</option>
-                  <option value="ja">Japanese</option>
-                  <option value="zh">Chinese</option>
+                  {locales.map((loc) => (
+                    <option key={loc} value={loc}>
+                      {localeNames[loc]}
+                    </option>
+                  ))}
                 </select>
                 <p className="text-xs text-slate-500 mt-2">
-                  Leave as "Default" to use for all languages, or select a specific language
+                  Leave as &quot;Default&quot; to use for all languages, or select a specific language
                 </p>
               </div>
 
@@ -485,7 +480,7 @@ export default function AdminLogoPage() {
                 </svg>
               </div>
               <h3 className="text-lg font-bold text-slate-800">No logos found</h3>
-              <p className="text-sm text-slate-600 mt-2">Click "Add Logo" to create your first logo</p>
+              <p className="text-sm text-slate-600 mt-2">Click &quot;Add Logo&quot; to create your first logo</p>
             </div>
           ) : (
             <div className="overflow-x-auto">

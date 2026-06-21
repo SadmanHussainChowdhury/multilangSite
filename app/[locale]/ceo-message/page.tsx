@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 import Navigation from '@/components/Navigation';
 import { usePageContent } from '@/hooks/usePageContent';
+import { sanitizeHtmlContent } from '@/lib/sanitizeHtml';
 
 export default function CEOMessagePage() {
   const t = useTranslations('ceoMessage');
@@ -32,7 +33,7 @@ export default function CEOMessagePage() {
   }
 
   const title = pageContent?.title || t('title');
-  const content = pageContent?.content || fallbackContent;
+  const content = sanitizeHtmlContent(pageContent?.content || fallbackContent);
 
   return (
     <div className="min-h-screen bg-gray-50">

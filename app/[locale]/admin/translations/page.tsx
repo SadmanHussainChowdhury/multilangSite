@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useLocale } from 'next-intl';
 import AdminNav from '@/components/AdminNav';
@@ -27,10 +27,6 @@ export default function AdminTranslationsPage() {
   const [previewWindow, setPreviewWindow] = useState<Window | null>(null);
   const [isLivePreview, setIsLivePreview] = useState(false);
 
-  useEffect(() => {
-    fetchTranslations();
-  }, [filterLocale, filterNamespace, search]);
-
   // Cleanup preview window on unmount
   useEffect(() => {
     return () => {
@@ -40,7 +36,7 @@ export default function AdminTranslationsPage() {
     };
   }, [previewWindow]);
 
-  const fetchTranslations = async () => {
+  const fetchTranslations = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
@@ -61,7 +57,11 @@ export default function AdminTranslationsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filterLocale, filterNamespace, search]);
+
+  useEffect(() => {
+    fetchTranslations();
+  }, [fetchTranslations]);
 
   const handleEdit = (translation: Translation) => {
     setEditingId(translation._id);
@@ -159,7 +159,6 @@ export default function AdminTranslationsPage() {
   const handleBulkImport = async () => {
     try {
       // Import all translations from JSON files
-      const locales = ['en', 'ar', 'bn', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'zh'];
       const translationsToImport: any[] = [];
 
       for (const loc of locales) {
@@ -191,7 +190,6 @@ export default function AdminTranslationsPage() {
         });
 
         // Force refresh all locales
-        const locales = ['en', 'ar', 'bn', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'zh'];
         await Promise.all(
           locales.map(loc => 
             fetch(`/api/translations/refresh?locale=${loc}&force=true`)
@@ -405,7 +403,7 @@ export default function AdminTranslationsPage() {
                 {translations.length === 0 ? (
                   <tr>
                     <td colSpan={5} className="px-6 py-4 text-center text-gray-500">
-                      No translations found. Click "Import from JSON" to import existing translations.
+                      No translations found. Click &quot;Import from JSON&quot; to import existing translations.
                     </td>
                   </tr>
                 ) : (

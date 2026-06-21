@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Page from '@/models/Page';
 import { requireAdmin } from '@/lib/admin-auth';
+import { locales } from '@/i18n/config';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -27,6 +28,10 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const locale = searchParams.get('locale') || 'en';
+
+    if (!locales.includes(locale as any)) {
+      return NextResponse.json({ message: 'Invalid locale' }, { status: 400 });
+    }
 
     await connectDB();
 

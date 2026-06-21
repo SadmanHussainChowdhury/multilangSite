@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useLocale } from 'next-intl';
 import Navigation from './Navigation';
+import { sanitizeHtmlContent } from '@/lib/sanitizeHtml';
 
 interface PageContent {
   title: string;
@@ -25,11 +26,7 @@ export default function DynamicPage({ slug, fallbackContent, children }: Dynamic
   const [pageContent, setPageContent] = useState<PageContent | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchPageContent();
-  }, [slug, locale]);
-
-  const fetchPageContent = async () => {
+  const fetchPageContent = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch(`/api/pages/${slug}?locale=${locale}`);
@@ -58,7 +55,11 @@ export default function DynamicPage({ slug, fallbackContent, children }: Dynamic
     } finally {
       setLoading(false);
     }
-  };
+  }, [fallbackContent, locale, slug]);
+
+  useEffect(() => {
+    fetchPageContent();
+  }, [fetchPageContent]);
 
   if (loading) {
     return (
@@ -88,6 +89,7 @@ export default function DynamicPage({ slug, fallbackContent, children }: Dynamic
   }
 
   const content = pageContent || fallbackContent!;
+  const safeContent = sanitizeHtmlContent(content.content);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -98,7 +100,7 @@ export default function DynamicPage({ slug, fallbackContent, children }: Dynamic
             <h1 className="text-4xl font-bold text-gray-800 mb-6">{content.title}</h1>
             <div 
               className="text-lg text-gray-700 leading-relaxed prose max-w-none"
-              dangerouslySetInnerHTML={{ __html: content.content }}
+              dangerouslySetInnerHTML={{ __html: safeContent }}
             />
             {children}
           </div>

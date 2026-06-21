@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Page from '@/models/Page';
+import { locales } from '@/i18n/config';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -15,8 +16,8 @@ export async function GET(
     const { searchParams } = new URL(request.url);
     const locale = searchParams.get('locale') || 'en';
 
-    if (!slug) {
-      return NextResponse.json({ message: 'Slug is required' }, { status: 400 });
+    if (!locales.includes(locale as any)) {
+      return NextResponse.json({ message: 'Invalid locale' }, { status: 400 });
     }
 
     await connectDB();

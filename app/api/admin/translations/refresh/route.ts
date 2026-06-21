@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { clearCache } from '@/lib/translationCache';
 import { requireAdmin } from '@/lib/admin-auth';
+import { locales } from '@/i18n/config';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -13,6 +14,10 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json().catch(() => ({}));
     const locale = body?.locale;
+
+    if (locale && !locales.includes(locale)) {
+      return NextResponse.json({ message: 'Invalid locale' }, { status: 400 });
+    }
 
     // Clear cache
     clearCache(locale);

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useLocale } from 'next-intl';
 import AdminNav from '@/components/AdminNav';
@@ -32,14 +32,7 @@ export default function AdminRegistrationsPage() {
   const [showModal, setShowModal] = useState(false);
   const itemsPerPage = 10;
 
-  useEffect(() => {
-    fetchRegistrations();
-    // Auto-refresh every 30 seconds
-    const interval = setInterval(fetchRegistrations, 30000);
-    return () => clearInterval(interval);
-  }, [currentPage, filterType]);
-
-  const fetchRegistrations = async () => {
+  const fetchRegistrations = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams({
@@ -63,7 +56,13 @@ export default function AdminRegistrationsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage, filterType]);
+
+  useEffect(() => {
+    fetchRegistrations();
+    const interval = setInterval(fetchRegistrations, 30000);
+    return () => clearInterval(interval);
+  }, [currentPage, filterType, fetchRegistrations]);
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this registration?')) {

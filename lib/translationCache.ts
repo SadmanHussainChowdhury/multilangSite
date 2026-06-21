@@ -1,6 +1,6 @@
 // Translation cache management
 const translationCache = new Map<string, { messages: any; timestamp: number }>();
-const CACHE_TTL = 30 * 1000; // 30 seconds cache (reduced for real-time updates)
+const CACHE_TTL = 1000;
 
 export function getCachedTranslation(locale: string): any | null {
   const cached = translationCache.get(locale);

@@ -5,10 +5,9 @@ import { getMessages } from 'next-intl/server';
 import { Providers } from '../providers';
 import LocaleHtml from '@/components/LocaleHtml';
 import Footer from '@/components/Footer';
+import TranslationRefresh from '@/components/TranslationRefresh';
 
-export function generateStaticParams() {
-  return locales.map((locale) => ({ locale }));
-}
+export const dynamic = 'force-dynamic';
 
 export default async function LocaleLayout({
   children,
@@ -28,6 +27,7 @@ export default async function LocaleLayout({
   return (
     <Providers>
       <NextIntlClientProvider messages={messages}>
+        <TranslationRefresh />
         <LocaleHtml />
         {children}
         <Footer />

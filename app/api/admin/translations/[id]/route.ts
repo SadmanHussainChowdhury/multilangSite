@@ -3,6 +3,7 @@ import connectDB from '@/lib/mongodb';
 import Translation from '@/models/Translation';
 import { z } from 'zod';
 import { requireAdmin } from '@/lib/admin-auth';
+import { bumpTranslationVersion } from '@/lib/translationVersions';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -85,6 +86,8 @@ export async function PUT(
       return NextResponse.json({ message: 'Translation not found' }, { status: 404 });
     }
 
+    await bumpTranslationVersion(translation.locale);
+
     return NextResponse.json({
       message: 'Translation updated successfully',
       data: translation,
@@ -125,6 +128,8 @@ export async function DELETE(
     if (!translation) {
       return NextResponse.json({ message: 'Translation not found' }, { status: 404 });
     }
+
+    await bumpTranslationVersion(translation.locale);
 
     return NextResponse.json({ message: 'Translation deleted successfully' });
   } catch (error) {

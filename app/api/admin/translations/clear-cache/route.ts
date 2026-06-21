@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { clearCache } from '@/lib/translationCache';
 import { requireAdmin } from '@/lib/admin-auth';
 import { locales } from '@/i18n/config';
+import { bumpTranslationVersion } from '@/lib/translationVersions';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -27,6 +28,7 @@ export async function POST(request: NextRequest) {
     }
 
     clearCache(validLocale);
+    await bumpTranslationVersion(validLocale);
 
     return NextResponse.json({
       message: locale ? `Cache cleared for ${locale}` : 'All cache cleared',

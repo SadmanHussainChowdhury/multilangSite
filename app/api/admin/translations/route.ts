@@ -4,6 +4,7 @@ import Translation from '@/models/Translation';
 import { z } from 'zod';
 import { requireAdmin } from '@/lib/admin-auth';
 import { locales } from '@/i18n/config';
+import { bumpTranslationVersion } from '@/lib/translationVersions';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -83,6 +84,9 @@ export async function POST(request: NextRequest) {
         results.push(translation);
       }
 
+      const updatedLocales = Array.from(new Set(results.map((translation) => translation.locale)));
+      await Promise.all(updatedLocales.map((updatedLocale) => bumpTranslationVersion(updatedLocale)));
+
       return NextResponse.json({
         message: 'Translations updated successfully',
         data: results,
@@ -98,6 +102,8 @@ export async function POST(request: NextRequest) {
       validatedData,
       { upsert: true, new: true }
     );
+
+    await bumpTranslationVersion(validatedData.locale);
 
     return NextResponse.json(
       { message: 'Translation saved successfully', data: translation },

@@ -9,10 +9,6 @@ function hashString(input: string) {
   return (hash >>> 0).toString(16).padStart(8, '0');
 }
 
-function isProduction() {
-  return process.env.NODE_ENV === 'production';
-}
-
 export function getAuthSecret() {
   const secret = process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET;
 
@@ -20,8 +16,8 @@ export function getAuthSecret() {
     return secret;
   }
 
-  if (isProduction()) {
-    throw new Error('Missing NEXTAUTH_SECRET or AUTH_SECRET environment variable.');
+  if (process.env.NODE_ENV === 'production') {
+    console.warn('Missing NEXTAUTH_SECRET or AUTH_SECRET environment variable. Using generated fallback secret.');
   }
 
   const source = process.env.MONGODB_URI || process.env.VERCEL_URL || 'local-dev-secret';

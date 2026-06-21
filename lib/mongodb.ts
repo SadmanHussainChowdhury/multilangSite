@@ -19,7 +19,7 @@ async function connectDB() {
   const mongodbUri = process.env.MONGODB_URI;
 
   if (!mongodbUri) {
-    throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
+    throw new Error('Missing MONGODB_URI environment variable.');
   }
 
   if (cached.conn) {
@@ -35,8 +35,8 @@ async function connectDB() {
       .then((mongoose) => {
         return mongoose;
       })
-      .catch(() => {
-        console.error('MongoDB connection error');
+      .catch((error) => {
+        console.error('MongoDB connection error:', error);
         cached.promise = null;
         throw new Error('MongoDB connection failed');
       });
@@ -44,9 +44,9 @@ async function connectDB() {
 
   try {
     cached.conn = await cached.promise;
-  } catch {
+  } catch (error) {
     cached.promise = null;
-    console.error('MongoDB connection failed');
+    console.error('MongoDB connection failed:', error);
     throw new Error('MongoDB connection failed');
   }
 

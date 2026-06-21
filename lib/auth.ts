@@ -1,6 +1,6 @@
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { ensureAuthEnv } from './authEnv';
+import { ensureAuthEnv, getAuthSecret } from './authEnv';
 import connectDB from './mongodb';
 import User from '@/models/User';
 
@@ -16,21 +16,21 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          throw new Error('Please enter email and password');
+          return null;
         }
 
         await connectDB();
 
-        const user = await User.findOne({ email: credentials.email }).select('+password');
+        const user = await User.findOne({ email: credentials.email.trim().toLowerCase() }).select('+password');
 
         if (!user) {
-          throw new Error('Invalid email or password');
+          return null;
         }
 
         const isPasswordValid = await user.comparePassword(credentials.password);
 
         if (!isPasswordValid) {
-          throw new Error('Invalid email or password');
+          return null;
         }
 
         return {
@@ -60,10 +60,23 @@ export const authOptions: NextAuthOptions = {
   },
   pages: {
     signIn: '/auth/login',
+    error: '/auth/login',
   },
   session: {
     strategy: 'jwt',
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: getAuthSecret(),
+  logger: {
+    error(code, metadata) {
+      console.error(`[next-auth][${code}]`, metadata);
+    },
+    warn(code) {
+      console.warn(`[next-auth][${code}]`);
+    },
+    debug(code, metadata) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.debug(`[next-auth][${code}]`, metadata);
+      }
+    },
+  },
 };
-

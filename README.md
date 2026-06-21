@@ -100,7 +100,7 @@ nextjs-app/
 
 ## Multi-language Support
 
-The app supports 11 languages. Add translation files in `i18n/messages/`:
+The app supports 13 languages. Add translation files in `i18n/messages/`:
 
 - `en.json` - English (default)
 - `ar.json` - Arabic
@@ -121,8 +121,12 @@ The app supports 11 languages. Add translation files in `i18n/messages/`:
 
 1. Push to GitHub
 2. Import project in Vercel
-3. Add environment variables
-4. Deploy!
+3. Add environment variables for Production, Preview, and Development:
+   - `MONGODB_URI`: Your MongoDB connection string
+   - `NEXTAUTH_SECRET`: A stable random secret, for example from `openssl rand -base64 32`
+   - `NEXTAUTH_URL`: Your deployed app URL, for example `https://your-domain.vercel.app`
+4. In MongoDB Atlas, allow Vercel to connect to the database. If you are not using fixed egress IPs, add `0.0.0.0/0` in Network Access.
+5. Deploy!
 
 ### Other Platforms
 

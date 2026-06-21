@@ -6,10 +6,41 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { useLocale } from 'next-intl';
 
+function getSafeCallbackUrl(callbackUrl: string | null, locale: string) {
+  if (!callbackUrl) {
+    return `/${locale}/admin`;
+  }
+
+  try {
+    const url = new URL(callbackUrl, window.location.origin);
+
+    if (url.origin !== window.location.origin) {
+      return `/${locale}/admin`;
+    }
+
+    return `${url.pathname}${url.search}${url.hash}`;
+  } catch {
+    return `/${locale}/admin`;
+  }
+}
+
+function getLoginErrorMessage(error: string | null) {
+  if (!error) {
+    return null;
+  }
+
+  if (error === 'CredentialsSignin') {
+    return 'Invalid email or password';
+  }
+
+  return 'Sign in is temporarily unavailable. Please try again later.';
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const locale = useLocale();
+  const loginError = getLoginErrorMessage(searchParams.get('error'));
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -21,7 +52,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const callbackUrl = searchParams.get('callbackUrl') || `/${locale}/admin`;
+      const callbackUrl = getSafeCallbackUrl(searchParams.get('callbackUrl'), locale);
       const result = await signIn('credentials', {
         email: formData.email,
         password: formData.password,
@@ -30,7 +61,7 @@ export default function LoginPage() {
       });
 
       if (result?.error) {
-        toast.error('Invalid email or password');
+        toast.error(getLoginErrorMessage(result.error) || 'Login failed');
       } else {
         toast.success('Login successful');
         router.push(callbackUrl);
@@ -49,6 +80,11 @@ export default function LoginPage() {
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Sign in to your account
           </h2>
+          {loginError && (
+            <p className="mt-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              {loginError}
+            </p>
+          )}
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">

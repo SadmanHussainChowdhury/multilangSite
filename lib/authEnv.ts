@@ -9,11 +9,19 @@ function hashString(input: string) {
   return (hash >>> 0).toString(16).padStart(8, '0');
 }
 
+function isProduction() {
+  return process.env.NODE_ENV === 'production';
+}
+
 export function getAuthSecret() {
   const secret = process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET;
 
   if (secret) {
     return secret;
+  }
+
+  if (isProduction()) {
+    throw new Error('Missing NEXTAUTH_SECRET or AUTH_SECRET environment variable.');
   }
 
   const source = process.env.MONGODB_URI || process.env.VERCEL_URL || 'local-dev-secret';

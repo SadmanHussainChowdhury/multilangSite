@@ -1,7 +1,10 @@
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import { ensureAuthEnv } from './authEnv';
 import connectDB from './mongodb';
 import User from '@/models/User';
+
+ensureAuthEnv();
 
 export const authOptions: NextAuthOptions = {
   providers: [

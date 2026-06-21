@@ -1,6 +1,7 @@
 import createMiddleware from 'next-intl/middleware';
 import { NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
+import { getAuthSecret } from './lib/authEnv';
 import { locales, defaultLocale, type Locale } from './i18n/config';
 
 // Create the i18n middleware
@@ -32,7 +33,7 @@ export default async function middleware(request: NextRequest) {
   if (isDashboardRoute || isAdminRoute) {
     const token = await getToken({ 
       req: request,
-      secret: process.env.NEXTAUTH_SECRET 
+      secret: getAuthSecret()
     });
     
     if (!token) {

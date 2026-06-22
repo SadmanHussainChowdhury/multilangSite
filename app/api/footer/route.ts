@@ -18,7 +18,11 @@ export async function GET(request: NextRequest) {
 
     await connectDB();
 
-    const footer = await Footer.findOne({ locale, isActive: true });
+    let footer = await Footer.findOne({ locale, isActive: true });
+
+    if (!footer && locale !== 'en') {
+      footer = await Footer.findOne({ locale: 'en', isActive: true });
+    }
 
     if (!footer) {
       return NextResponse.json({ message: 'Footer not found' }, { status: 404 });
@@ -33,4 +37,3 @@ export async function GET(request: NextRequest) {
     );
   }
 }
-

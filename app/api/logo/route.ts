@@ -24,11 +24,19 @@ export async function GET(request: NextRequest) {
       isActive: true,
     });
 
-    // If no locale-specific logo, use default (en or any active logo)
+    // If no locale-specific logo, use the default English logo first.
+    if (!logo && locale !== 'en') {
+      logo = await Logo.findOne({
+        locale: 'en',
+        isActive: true,
+      }).sort({ updatedAt: -1 });
+    }
+
+    // If there is still no logo, fall back to any active logo.
     if (!logo) {
       logo = await Logo.findOne({
         isActive: true,
-      }).sort({ createdAt: -1 });
+      }).sort({ updatedAt: -1 });
     }
 
     if (!logo) {
@@ -47,4 +55,3 @@ export async function GET(request: NextRequest) {
     );
   }
 }
-

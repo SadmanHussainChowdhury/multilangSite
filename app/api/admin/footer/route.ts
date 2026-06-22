@@ -13,7 +13,10 @@ const footerSchema = z.object({
   companyDescription: z.string().max(500).trim().optional(),
   address: z.string().max(500).trim().optional(),
   phone: z.string().max(50).trim().optional(),
-  email: z.string().email('Invalid email').max(255).trim().optional(),
+  email: z.preprocess(
+    emptyStringToUndefined,
+    z.string().email('Invalid email').max(255).trim().optional()
+  ),
   socialLinks: z.object({
     facebook: z.string().url('Invalid URL').optional().or(z.literal('')),
     twitter: z.string().url('Invalid URL').optional().or(z.literal('')),
@@ -33,6 +36,23 @@ const footerSchema = z.object({
   isActive: z.boolean().optional().default(true),
 });
 
+function emptyStringToUndefined(value: unknown) {
+  return typeof value === 'string' && value.trim() === '' ? undefined : value;
+}
+
+function cleanLinks(links: unknown) {
+  if (!Array.isArray(links)) {
+    return [];
+  }
+
+  return links
+    .map((link) => ({
+      title: typeof link?.title === 'string' ? link.title.trim() : '',
+      url: typeof link?.url === 'string' ? link.url.trim() : '',
+    }))
+    .filter((link) => link.title || link.url);
+}
+
 // GET - Fetch footer by locale
 export async function GET(request: NextRequest) {
   try {
@@ -44,7 +64,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const locale = searchParams.get('locale') || 'en';
 
-    const footer = await Footer.findOne({ locale, isActive: true });
+    const footer = await Footer.findOne({ locale });
 
     if (!footer) {
       return NextResponse.json({ message: 'Footer not found' }, { status: 404 });
@@ -76,6 +96,9 @@ export async function POST(request: NextRequest) {
         }
       });
     }
+
+    body.quickLinks = cleanLinks(body.quickLinks);
+    body.services = cleanLinks(body.services);
 
     // Validate input
     const validatedData = footerSchema.parse(body);

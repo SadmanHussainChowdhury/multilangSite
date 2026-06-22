@@ -26,6 +26,7 @@ export default function AdminTranslationsPage() {
   const [editValue, setEditValue] = useState('');
   const [previewWindow, setPreviewWindow] = useState<Window | null>(null);
   const [isLivePreview, setIsLivePreview] = useState(false);
+  const [importing, setImporting] = useState(false);
 
   // Cleanup preview window on unmount
   useEffect(() => {
@@ -157,45 +158,19 @@ export default function AdminTranslationsPage() {
   };
 
   const handleBulkImport = async () => {
+    setImporting(true);
+
     try {
-      // Import all translations from JSON files
-      const translationsToImport: any[] = [];
-
-      for (const loc of locales) {
-        try {
-          const messages = await import(`@/i18n/messages/${loc}.json`);
-          const flatMessages = flattenObject(messages.default, loc);
-          translationsToImport.push(...flatMessages);
-        } catch (error) {
-          console.error(`Error importing ${loc}:`, error);
-        }
-      }
-
-      const response = await fetch('/api/admin/translations', {
+      const response = await fetch('/api/admin/translations/import-json', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(translationsToImport),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        // Clear all translation cache
-        await fetch('/api/admin/translations/clear-cache', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({}),
-        });
-
-        // Force refresh all locales
-        await Promise.all(
-          locales.map(loc => 
-            fetch(`/api/translations/refresh?locale=${loc}&force=true`)
-          )
-        );
-
         // Force refresh if live preview is active
         if (isLivePreview && previewWindow && !previewWindow.closed) {
           setTimeout(() => {
@@ -203,32 +178,16 @@ export default function AdminTranslationsPage() {
           }, 200);
         }
 
-        toast.success(`Imported ${translationsToImport.length} translations! Changes are live now.`);
+        toast.success(`Imported ${data.count || 0} translations! Changes are live now.`);
         fetchTranslations();
       } else {
         toast.error(data.message || 'Failed to import translations');
       }
     } catch (error) {
       toast.error('Error importing translations');
+    } finally {
+      setImporting(false);
     }
-  };
-
-  const flattenObject = (obj: any, locale: string, prefix = '', namespace = ''): any[] => {
-    const result: any[] = [];
-    for (const key in obj) {
-      const newKey = prefix ? `${prefix}.${key}` : key;
-      if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
-        result.push(...flattenObject(obj[key], locale, newKey, namespace || key));
-      } else {
-        result.push({
-          key: newKey,
-          locale,
-          value: String(obj[key]),
-          namespace: namespace || newKey.split('.')[0],
-        });
-      }
-    }
-    return result;
   };
 
   const namespaces = Array.from(new Set(translations.map((t) => t.namespace || 'common')));
@@ -316,9 +275,10 @@ export default function AdminTranslationsPage() {
               </button>
               <button
                 onClick={handleBulkImport}
+                disabled={importing}
                 className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold rounded-xl premium-shadow-lg hover:scale-105 transition-all duration-300"
               >
-                Import from JSON
+                {importing ? 'Importing...' : 'Import from JSON'}
               </button>
             </div>
           </div>

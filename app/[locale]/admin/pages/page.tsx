@@ -34,6 +34,7 @@ export default function AdminPagesPage() {
   const [loading, setLoading] = useState(true);
   const [filterLocale, setFilterLocale] = useState<string>('all');
   const [showRouteStatus, setShowRouteStatus] = useState(true);
+  const selectedLocale = filterLocale !== 'all' ? filterLocale : locale;
 
   useEffect(() => {
     fetchPages();
@@ -64,8 +65,7 @@ export default function AdminPagesPage() {
 
   const fetchRouteStatus = async () => {
     try {
-      const currentLocale = filterLocale !== 'all' ? filterLocale : locale;
-      const response = await fetch(`/api/admin/pages/check-routes?locale=${currentLocale}`);
+      const response = await fetch(`/api/admin/pages/check-routes?locale=${selectedLocale}`);
       const data = await response.json();
 
       if (response.ok) {
@@ -86,7 +86,7 @@ export default function AdminPagesPage() {
         body: JSON.stringify({
           title: route.name,
           slug: route.slug,
-          locale: filterLocale !== 'all' ? filterLocale : locale,
+          locale: selectedLocale,
           content: `<h2>${route.name}</h2><p>This page content can be edited through the admin panel.</p>`,
           isActive: true,
         }),
@@ -119,6 +119,7 @@ export default function AdminPagesPage() {
       if (response.ok) {
         toast.success('Page deleted');
         fetchPages();
+        fetchRouteStatus();
       } else {
         toast.error('Failed to delete page');
       }
@@ -146,6 +147,7 @@ export default function AdminPagesPage() {
       if (response.ok) {
         toast.success(`Page ${!currentStatus ? 'activated' : 'deactivated'}`);
         fetchPages();
+        fetchRouteStatus();
       } else {
         toast.error('Failed to update page');
       }
@@ -264,7 +266,7 @@ export default function AdminPagesPage() {
                     <div className="flex flex-col gap-2 mt-3">
                       <div className="flex gap-2">
                         <Link
-                          href={`/${locale}${route.route}`}
+                          href={`/${selectedLocale}${route.route}`}
                           target="_blank"
                           className="text-sm text-green-600 hover:text-green-800 font-medium"
                         >

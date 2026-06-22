@@ -10,12 +10,21 @@ export const dynamic = 'force-dynamic';
 const pageSchema = z.object({
   title: z.string().min(1, 'Title is required').max(255).trim(),
   content: z.string().min(1, 'Content is required'),
-  slug: z.string().min(1, 'Slug is required').max(255).trim(),
+  slug: z.string().max(255).trim().transform(normalizeSlug).pipe(
+    z.string().min(1, 'Slug is required')
+  ),
   locale: z.enum(['vi', 'id', 'uz', 'mn', 'ne', 'my', 'si', 'bn', 'fil', 'km', 'th', 'en', 'ko']),
   metaTitle: z.string().max(255).trim().optional(),
   metaDescription: z.string().max(500).trim().optional(),
   isActive: z.boolean().optional(),
 });
+
+function normalizeSlug(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+}
 
 // GET - Fetch a single page by ID
 export async function GET(
@@ -77,8 +86,8 @@ export async function PUT(
       );
     }
 
-    const page = await Page.findByIdAndUpdate(
-      id,
+    const page = await Page.findOneAndUpdate(
+      { _id: id, deletedAt: null },
       validatedData,
       { new: true, runValidators: true }
     );
@@ -125,15 +134,15 @@ export async function DELETE(
     const { id } = params;
     await connectDB();
 
-    const page = await Page.findByIdAndUpdate(
-      id,
-      { deletedAt: new Date() },
-      { new: true }
-    );
+    const page = await Page.findOne({ _id: id, deletedAt: null });
 
     if (!page) {
       return NextResponse.json({ message: 'Page not found' }, { status: 404 });
     }
+
+    page.deletedAt = new Date();
+    page.slug = `${page.slug}--deleted-${page._id.toString()}`;
+    await page.save();
 
     return NextResponse.json({ message: 'Page deleted successfully' });
   } catch (error) {

@@ -15,7 +15,7 @@ export default function NewPagePage() {
     title: '',
     content: '',
     slug: '',
-    locale: 'en',
+    locale,
     metaTitle: '',
     metaDescription: '',
     isActive: true,
@@ -25,7 +25,7 @@ export default function NewPagePage() {
     const { name, value, type } = e.target;
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value,
+      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : name === 'slug' ? generateSlug(value) : value,
     });
   };
 
@@ -38,10 +38,11 @@ export default function NewPagePage() {
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const title = e.target.value;
+    const currentTitleSlug = generateSlug(formData.title);
     setFormData({
       ...formData,
       title,
-      slug: formData.slug || generateSlug(title),
+      slug: !formData.slug || formData.slug === currentTitleSlug ? generateSlug(title) : formData.slug,
     });
   };
 

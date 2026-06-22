@@ -60,8 +60,11 @@ const PageSchema = new Schema<IPage>(
   }
 );
 
-// Compound index for unique slug per locale
-PageSchema.index({ slug: 1, locale: 1 }, { unique: true });
+// Compound index for unique active slug per locale
+PageSchema.index(
+  { slug: 1, locale: 1 },
+  { unique: true, partialFilterExpression: { deletedAt: null } }
+);
 
 // Soft delete query helper
 (PageSchema.query as any).notDeleted = function (this: IPageQuery) {

@@ -11,12 +11,21 @@ export const dynamic = 'force-dynamic';
 const pageSchema = z.object({
   title: z.string().min(1, 'Title is required').max(255).trim(),
   content: z.string().min(1, 'Content is required'),
-  slug: z.string().min(1, 'Slug is required').max(255).trim(),
+  slug: z.string().max(255).trim().transform(normalizeSlug).pipe(
+    z.string().min(1, 'Slug is required')
+  ),
   locale: z.enum(['vi', 'id', 'uz', 'mn', 'ne', 'my', 'si', 'bn', 'fil', 'km', 'th', 'en', 'ko']),
   metaTitle: z.string().max(255).trim().optional(),
   metaDescription: z.string().max(500).trim().optional(),
   isActive: z.boolean().optional().default(true),
 });
+
+function normalizeSlug(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+}
 
 // GET - Fetch all pages with pagination
 export async function GET(request: NextRequest) {

@@ -69,11 +69,18 @@ export default function EditPagePage({ params }: { params: Promise<{ id: string 
     loadPage();
   }, [loadPage]);
 
+  const generateSlug = (value: string) => {
+    return value
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value,
+      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : name === 'slug' ? generateSlug(value) : value,
     });
   };
 

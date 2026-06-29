@@ -34,11 +34,18 @@ export default function EditPagePage({ params }: { params: Promise<{ id: string 
     isActive: true,
   });
 
+  // Image upload helper state
+  const [showImageHelper, setShowImageHelper] = useState(false);
+  const [imgUploading, setImgUploading] = useState(false);
+  const [imgUrl, setImgUrl] = useState('');
+  const [imgAlt, setImgAlt] = useState('');
+  const [imgUploadMethod, setImgUploadMethod] = useState<'file' | 'url'>('file');
+
   const loadPage = useCallback(async () => {
     try {
       const resolvedParams = await params;
       setPageId(resolvedParams.id);
-      
+
       const response = await fetch(`/api/admin/pages/${resolvedParams.id}`);
       const data = await response.json();
 
@@ -82,6 +89,45 @@ export default function EditPagePage({ params }: { params: Promise<{ id: string 
       ...formData,
       [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : name === 'slug' ? generateSlug(value) : value,
     });
+  };
+
+  const handleImageFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please select an image file');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('File size must be less than 5MB');
+      return;
+    }
+
+    setImgUploading(true);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImgUrl(reader.result as string);
+      setImgUploading(false);
+    };
+    reader.onerror = () => {
+      toast.error('Failed to read file');
+      setImgUploading(false);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const insertImageTag = () => {
+    if (!imgUrl) {
+      toast.error('Please provide an image URL or upload a file');
+      return;
+    }
+    const tag = `<img src="${imgUrl}" alt="${imgAlt}" style="max-width:100%;height:auto;" />`;
+    setFormData((prev) => ({ ...prev, content: prev.content + '\n' + tag }));
+    setShowImageHelper(false);
+    setImgUrl('');
+    setImgAlt('');
+    toast.success('Image inserted into content');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -204,10 +250,107 @@ export default function EditPagePage({ params }: { params: Promise<{ id: string 
                 </div>
               </div>
 
+              {/* Image Upload Helper */}
               <div>
-                <label htmlFor="content" className="block text-sm font-semibold text-gray-700 mb-2">
-                  Content <span className="text-red-500">*</span>
-                </label>
+                <div className="flex items-center justify-between mb-2">
+                  <label htmlFor="content" className="block text-sm font-semibold text-gray-700">
+                    Content <span className="text-red-500">*</span>
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setShowImageHelper(!showImageHelper)}
+                    className="flex items-center gap-2 px-3 py-1.5 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    {showImageHelper ? 'Hide Image Helper' : 'Insert Image'}
+                  </button>
+                </div>
+
+                {/* Image Upload Panel */}
+                {showImageHelper && (
+                  <div className="mb-4 p-4 border-2 border-indigo-200 rounded-xl bg-indigo-50">
+                    <h3 className="text-sm font-bold text-indigo-800 mb-3">Insert Image into Content</h3>
+
+                    <div className="flex gap-2 mb-3">
+                      <button
+                        type="button"
+                        onClick={() => { setImgUploadMethod('file'); setImgUrl(''); }}
+                        className={`px-3 py-1.5 text-sm rounded-lg font-medium transition ${imgUploadMethod === 'file' ? 'bg-indigo-600 text-white' : 'bg-white text-indigo-700 border border-indigo-300'}`}
+                      >
+                        Upload File
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => { setImgUploadMethod('url'); setImgUrl(''); }}
+                        className={`px-3 py-1.5 text-sm rounded-lg font-medium transition ${imgUploadMethod === 'url' ? 'bg-indigo-600 text-white' : 'bg-white text-indigo-700 border border-indigo-300'}`}
+                      >
+                        Enter URL
+                      </button>
+                    </div>
+
+                    {imgUploadMethod === 'file' && (
+                      <label className="flex flex-col items-center justify-center w-full h-28 border-2 border-dashed border-indigo-300 rounded-lg cursor-pointer bg-white hover:bg-indigo-50 transition mb-3">
+                        {imgUploading ? (
+                          <div className="flex items-center gap-2">
+                            <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-indigo-600"></div>
+                            <span className="text-sm text-indigo-700">Processing...</span>
+                          </div>
+                        ) : imgUrl ? (
+                          <div className="text-center">
+                            <svg className="w-8 h-8 text-green-500 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <p className="text-sm text-gray-600">Image loaded — ready to insert</p>
+                          </div>
+                        ) : (
+                          <div className="text-center">
+                            <svg className="w-8 h-8 text-indigo-400 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                            </svg>
+                            <p className="text-sm text-indigo-700"><span className="font-semibold">Click to upload</span> PNG, JPG, GIF (max 5MB)</p>
+                          </div>
+                        )}
+                        <input type="file" className="hidden" accept="image/*" onChange={handleImageFileChange} disabled={imgUploading} />
+                      </label>
+                    )}
+
+                    {imgUploadMethod === 'url' && (
+                      <input
+                        type="url"
+                        value={imgUrl}
+                        onChange={(e) => setImgUrl(e.target.value)}
+                        placeholder="https://example.com/image.png"
+                        className="w-full px-3 py-2 border border-indigo-300 rounded-lg focus:ring-2 focus:ring-indigo-400 mb-3 text-sm"
+                      />
+                    )}
+
+                    {imgUrl && (
+                      <div className="mb-3 p-2 bg-white rounded-lg border border-indigo-200">
+                        <img src={imgUrl} alt="preview" className="max-h-24 object-contain" />
+                      </div>
+                    )}
+
+                    <input
+                      type="text"
+                      value={imgAlt}
+                      onChange={(e) => setImgAlt(e.target.value)}
+                      placeholder="Alt text (accessibility description)"
+                      className="w-full px-3 py-2 border border-indigo-300 rounded-lg focus:ring-2 focus:ring-indigo-400 mb-3 text-sm"
+                    />
+
+                    <button
+                      type="button"
+                      onClick={insertImageTag}
+                      disabled={!imgUrl}
+                      className="px-4 py-2 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Insert Image Tag
+                    </button>
+                  </div>
+                )}
+
                 <textarea
                   id="content"
                   name="content"
@@ -217,6 +360,7 @@ export default function EditPagePage({ params }: { params: Promise<{ id: string 
                   onChange={handleChange}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm"
                 />
+                <p className="mt-1 text-sm text-gray-500">You can use HTML tags for formatting. Use &quot;Insert Image&quot; above to add images.</p>
               </div>
 
               <div>
@@ -270,4 +414,3 @@ export default function EditPagePage({ params }: { params: Promise<{ id: string 
     </div>
   );
 }
-

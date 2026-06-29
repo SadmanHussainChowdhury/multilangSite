@@ -16,8 +16,21 @@ interface Registration {
   visa_type: string;
   message?: string;
   country?: string;
+  isActive: boolean;
   createdAt: string;
 }
+
+const EMPTY_FORM = {
+  name: '',
+  alien_number: '',
+  passport_number: '',
+  nationality: '',
+  phone: '',
+  visa_type: 'income_tax',
+  message: '',
+  country: '',
+  isActive: true,
+};
 
 export default function AdminRegistrationsPage() {
   const locale = useLocale();
@@ -28,9 +41,14 @@ export default function AdminRegistrationsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
-  const [selectedRegistration, setSelectedRegistration] = useState<Registration | null>(null);
-  const [showModal, setShowModal] = useState(false);
   const itemsPerPage = 10;
+
+  // Modal / form state
+  const [showModal, setShowModal] = useState(false);
+  const [modalMode, setModalMode] = useState<'view' | 'edit' | 'create'>('view');
+  const [selectedRegistration, setSelectedRegistration] = useState<Registration | null>(null);
+  const [formData, setFormData] = useState(EMPTY_FORM);
+  const [formLoading, setFormLoading] = useState(false);
 
   const fetchRegistrations = useCallback(async () => {
     try {
@@ -77,6 +95,9 @@ export default function AdminRegistrationsPage() {
       if (response.ok) {
         toast.success('Registration deleted successfully');
         fetchRegistrations();
+        if (showModal && selectedRegistration?._id === id) {
+          setShowModal(false);
+        }
       } else {
         toast.error('Failed to delete registration');
       }
@@ -85,9 +106,94 @@ export default function AdminRegistrationsPage() {
     }
   };
 
-  const handleViewDetails = (registration: Registration) => {
-    setSelectedRegistration(registration);
+  const handleToggleActive = async (id: string, currentStatus: boolean) => {
+    try {
+      const response = await fetch(`/api/admin/registrations/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isActive: !currentStatus }),
+      });
+
+      if (response.ok) {
+        toast.success(`Registration ${!currentStatus ? 'activated' : 'deactivated'}`);
+        fetchRegistrations();
+      } else {
+        toast.error('Failed to update status');
+      }
+    } catch (error) {
+      toast.error('Error updating status');
+    }
+  };
+
+  const handleOpenCreate = () => {
+    setFormData(EMPTY_FORM);
+    setSelectedRegistration(null);
+    setModalMode('create');
     setShowModal(true);
+  };
+
+  const handleOpenEdit = (registration: Registration) => {
+    setFormData({
+      name: registration.name,
+      alien_number: registration.alien_number,
+      passport_number: registration.passport_number || '',
+      nationality: registration.nationality,
+      phone: registration.phone,
+      visa_type: registration.visa_type,
+      message: registration.message || '',
+      country: registration.country || '',
+      isActive: registration.isActive,
+    });
+    setSelectedRegistration(registration);
+    setModalMode('edit');
+    setShowModal(true);
+  };
+
+  const handleOpenView = (registration: Registration) => {
+    setSelectedRegistration(registration);
+    setModalMode('view');
+    setShowModal(true);
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormLoading(true);
+
+    try {
+      if (modalMode === 'create') {
+        const response = await fetch('/api/admin/registrations', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+        });
+        const data = await response.json();
+        if (response.ok) {
+          toast.success('Registration created successfully');
+          setShowModal(false);
+          fetchRegistrations();
+        } else {
+          toast.error(data.message || 'Failed to create registration');
+        }
+      } else if (modalMode === 'edit' && selectedRegistration) {
+        const response = await fetch(`/api/admin/registrations/${selectedRegistration._id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+        });
+        const data = await response.json();
+        if (response.ok) {
+          toast.success('Registration updated successfully');
+          setShowModal(false);
+          fetchRegistrations();
+        } else {
+          toast.error(data.message || 'Failed to update registration');
+        }
+      }
+    } catch (error) {
+      toast.error('Error saving registration');
+    } finally {
+      setFormLoading(false);
+    }
   };
 
   const filteredRegistrations = registrations.filter((reg) => {
@@ -100,7 +206,7 @@ export default function AdminRegistrationsPage() {
   });
 
   const exportToCSV = () => {
-    const headers = ['Name', 'Alien Number', 'Passport Number', 'Nationality', 'Phone', 'Service Type', 'Country', 'Date'];
+    const headers = ['Name', 'Alien Number', 'Passport Number', 'Nationality', 'Phone', 'Service Type', 'Country', 'Status', 'Date'];
     const rows = registrations.map((reg) => [
       reg.name,
       reg.alien_number,
@@ -109,6 +215,7 @@ export default function AdminRegistrationsPage() {
       reg.phone,
       reg.visa_type.replace('_', ' '),
       reg.country || '',
+      reg.isActive ? 'Active' : 'Inactive',
       new Date(reg.createdAt).toLocaleDateString(),
     ]);
 
@@ -172,9 +279,15 @@ export default function AdminRegistrationsPage() {
               </button>
               <button
                 onClick={fetchRegistrations}
-                className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl premium-shadow-lg hover:scale-105 transition-all duration-300"
+                className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl premium-shadow-lg hover:scale-105 transition-all duration-300"
               >
                 Refresh
+              </button>
+              <button
+                onClick={handleOpenCreate}
+                className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl premium-shadow-lg hover:scale-105 transition-all duration-300"
+              >
+                + New Registration
               </button>
             </div>
           </div>
@@ -240,48 +353,39 @@ export default function AdminRegistrationsPage() {
                 <table className="min-w-full divide-y divide-slate-200/50">
                   <thead className="bg-gradient-to-r from-blue-50/50 to-indigo-50/50 backdrop-blur-sm">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Name
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Alien Number
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Nationality
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Phone
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Service Type
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Date
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Actions
-                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Alien Number</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nationality</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service Type</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white/50 backdrop-blur-sm divide-y divide-slate-200/50">
                     {filteredRegistrations.map((registration) => (
                       <tr key={registration._id} className="hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-indigo-50/50 transition-all duration-200">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                          {registration.name}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {registration.alien_number}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {registration.nationality}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {registration.phone}
-                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{registration.name}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{registration.alien_number}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{registration.nationality}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{registration.phone}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">
-                            {registration.visa_type.replace('_', ' ')}
+                            {registration.visa_type.replace(/_/g, ' ')}
                           </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm">
+                          <button
+                            onClick={() => handleToggleActive(registration._id, registration.isActive)}
+                            className={`px-3 py-1 rounded-full text-xs font-semibold transition-colors ${
+                              registration.isActive
+                                ? 'bg-green-100 text-green-800 hover:bg-green-200'
+                                : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                            }`}
+                          >
+                            {registration.isActive ? 'Active' : 'Inactive'}
+                          </button>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           {new Date(registration.createdAt).toLocaleDateString()}
@@ -289,10 +393,16 @@ export default function AdminRegistrationsPage() {
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                           <div className="flex gap-2">
                             <button
-                              onClick={() => handleViewDetails(registration)}
+                              onClick={() => handleOpenView(registration)}
                               className="text-blue-600 hover:text-blue-900"
                             >
                               View
+                            </button>
+                            <button
+                              onClick={() => handleOpenEdit(registration)}
+                              className="text-indigo-600 hover:text-indigo-900"
+                            >
+                              Edit
                             </button>
                             <button
                               onClick={() => handleDelete(registration._id)}
@@ -318,22 +428,22 @@ export default function AdminRegistrationsPage() {
                     <div className="text-sm text-gray-700">
                       Page {currentPage} of {totalPages}
                     </div>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-                      disabled={currentPage === 1}
-                      className="px-4 py-2 bg-white border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-                    >
-                      Previous
-                    </button>
-                    <button
-                      onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
-                      disabled={currentPage === totalPages}
-                      className="px-4 py-2 bg-white border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-                    >
-                      Next
-                    </button>
-                  </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                        disabled={currentPage === 1}
+                        className="px-4 py-2 bg-white border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                      >
+                        Previous
+                      </button>
+                      <button
+                        onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                        disabled={currentPage === totalPages}
+                        className="px-4 py-2 bg-white border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                      >
+                        Next
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
@@ -342,16 +452,18 @@ export default function AdminRegistrationsPage() {
         </div>
       </div>
 
-      {/* View Details Modal */}
-      {showModal && selectedRegistration && (
+      {/* Modal */}
+      {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
             <div className="p-6">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold text-gray-800">Registration Details</h2>
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-800">
+                  {modalMode === 'create' ? 'New Registration' : modalMode === 'edit' ? 'Edit Registration' : 'Registration Details'}
+                </h2>
                 <button
                   onClick={() => setShowModal(false)}
-                  className="text-gray-500 hover:text-gray-700"
+                  className="text-gray-500 hover:text-gray-700 transition-colors"
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -359,77 +471,222 @@ export default function AdminRegistrationsPage() {
                 </button>
               </div>
 
-              <div className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Full Name</label>
-                  <p className="mt-1 text-gray-900">{selectedRegistration.name}</p>
+              {/* VIEW MODE */}
+              {modalMode === 'view' && selectedRegistration && (
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-sm font-medium text-gray-600">Full Name</label>
+                    <p className="mt-1 text-gray-900 font-semibold">{selectedRegistration.name}</p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-sm font-medium text-gray-600">Alien Registration Number</label>
+                      <p className="mt-1 text-gray-900">{selectedRegistration.alien_number}</p>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-600">Passport Number</label>
+                      <p className="mt-1 text-gray-900">{selectedRegistration.passport_number || 'N/A'}</p>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-sm font-medium text-gray-600">Nationality</label>
+                      <p className="mt-1 text-gray-900">{selectedRegistration.nationality}</p>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-600">Phone Number</label>
+                      <p className="mt-1 text-gray-900">{selectedRegistration.phone}</p>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-sm font-medium text-gray-600">Service Type</label>
+                      <p className="mt-1 text-gray-900">{selectedRegistration.visa_type.replace(/_/g, ' ')}</p>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-600">Country</label>
+                      <p className="mt-1 text-gray-900">{selectedRegistration.country || 'N/A'}</p>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-sm font-medium text-gray-600">Status</label>
+                      <p className="mt-1">
+                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${selectedRegistration.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                          {selectedRegistration.isActive ? 'Active' : 'Inactive'}
+                        </span>
+                      </p>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-600">Submitted Date</label>
+                      <p className="mt-1 text-gray-900">{new Date(selectedRegistration.createdAt).toLocaleString()}</p>
+                    </div>
+                  </div>
+                  {selectedRegistration.message && (
+                    <div>
+                      <label className="text-sm font-medium text-gray-600">Additional Information</label>
+                      <p className="mt-1 text-gray-900">{selectedRegistration.message}</p>
+                    </div>
+                  )}
+                  <div className="mt-6 flex justify-end gap-3">
+                    <button
+                      onClick={() => handleOpenEdit(selectedRegistration)}
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleDelete(selectedRegistration._id);
+                        setShowModal(false);
+                      }}
+                      className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+                    >
+                      Delete
+                    </button>
+                    <button
+                      onClick={() => setShowModal(false)}
+                      className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
+                    >
+                      Close
+                    </button>
+                  </div>
                 </div>
+              )}
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm font-medium text-gray-600">Alien Registration Number</label>
-                    <p className="mt-1 text-gray-900">{selectedRegistration.alien_number}</p>
+              {/* CREATE / EDIT FORM */}
+              {(modalMode === 'create' || modalMode === 'edit') && (
+                <form onSubmit={handleFormSubmit} className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-1">
+                        Full Name <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="Full name"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-1">
+                        Alien Number <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.alien_number}
+                        onChange={(e) => setFormData({ ...formData, alien_number: e.target.value })}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="Alien registration number"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-1">Passport Number</label>
+                      <input
+                        type="text"
+                        value={formData.passport_number}
+                        onChange={(e) => setFormData({ ...formData, passport_number: e.target.value })}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="Passport number (optional)"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-1">
+                        Nationality <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.nationality}
+                        onChange={(e) => setFormData({ ...formData, nationality: e.target.value })}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="Nationality"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-1">
+                        Phone <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.phone}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="Phone number"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-1">
+                        Service Type <span className="text-red-500">*</span>
+                      </label>
+                      <select
+                        required
+                        value={formData.visa_type}
+                        onChange={(e) => setFormData({ ...formData, visa_type: e.target.value })}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      >
+                        <option value="income_tax">Income Tax Refund</option>
+                        <option value="house_rent">House Rent Tax Refund</option>
+                        <option value="family_tax">Family Tax Refund</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-1">Country</label>
+                      <input
+                        type="text"
+                        value={formData.country}
+                        onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="Country (optional)"
+                      />
+                    </div>
+                    <div className="flex items-center gap-3 pt-6">
+                      <input
+                        type="checkbox"
+                        id="isActiveForm"
+                        checked={formData.isActive}
+                        onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                      />
+                      <label htmlFor="isActiveForm" className="text-sm font-medium text-gray-700">
+                        Active
+                      </label>
+                    </div>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-600">Passport Number</label>
-                    <p className="mt-1 text-gray-900">{selectedRegistration.passport_number || 'N/A'}</p>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1">Additional Information</label>
+                    <textarea
+                      rows={3}
+                      value={formData.message}
+                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Any additional information (optional)"
+                    />
                   </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm font-medium text-gray-600">Nationality</label>
-                    <p className="mt-1 text-gray-900">{selectedRegistration.nationality}</p>
+                  <div className="flex justify-end gap-3 pt-2">
+                    <button
+                      type="submit"
+                      disabled={formLoading}
+                      className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {formLoading ? 'Saving...' : modalMode === 'create' ? 'Create' : 'Save Changes'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowModal(false)}
+                      className="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
+                    >
+                      Cancel
+                    </button>
                   </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-600">Phone Number</label>
-                    <p className="mt-1 text-gray-900">{selectedRegistration.phone}</p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm font-medium text-gray-600">Service Type</label>
-                    <p className="mt-1 text-gray-900">{selectedRegistration.visa_type.replace('_', ' ')}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-600">Country</label>
-                    <p className="mt-1 text-gray-900">{selectedRegistration.country || 'N/A'}</p>
-                  </div>
-                </div>
-
-                {selectedRegistration.message && (
-                  <div>
-                    <label className="text-sm font-medium text-gray-600">Additional Information</label>
-                    <p className="mt-1 text-gray-900">{selectedRegistration.message}</p>
-                  </div>
-                )}
-
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Submitted Date</label>
-                  <p className="mt-1 text-gray-900">
-                    {new Date(selectedRegistration.createdAt).toLocaleString()}
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-6 flex justify-end gap-3">
-                <button
-                  onClick={() => setShowModal(false)}
-                  className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
-                >
-                  Close
-                </button>
-                <button
-                  onClick={() => {
-                    handleDelete(selectedRegistration._id);
-                    setShowModal(false);
-                  }}
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
-                >
-                  Delete
-                </button>
-              </div>
+                </form>
+              )}
             </div>
           </div>
         </div>

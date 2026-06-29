@@ -9,6 +9,7 @@ export interface IRegistration extends Document {
   visa_type: 'income_tax' | 'house_rent' | 'family_tax' | 'other';
   message?: string;
   country?: string;
+  isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -51,6 +52,10 @@ const RegistrationSchema = new Schema<IRegistration>(
     country: {
       type: String,
       trim: true,
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
     },
   },
   {

@@ -45,7 +45,7 @@ export default function AdminPagesPage() {
   const fetchPages = async () => {
     try {
       setLoading(true);
-      const url = filterLocale !== 'all' 
+      const url = filterLocale !== 'all'
         ? `/api/admin/pages?locale=${filterLocale}`
         : '/api/admin/pages';
       const response = await fetch(url);
@@ -130,8 +130,14 @@ export default function AdminPagesPage() {
 
   const handleToggleActive = async (id: string, currentStatus: boolean) => {
     try {
-      const page = pages.find(p => p._id === id);
-      if (!page) return;
+      // Fetch the full page first (list view doesn't include `content` which is required by the API)
+      const pageRes = await fetch(`/api/admin/pages/${id}`);
+      const pageData = await pageRes.json();
+      if (!pageRes.ok || !pageData.data) {
+        toast.error('Failed to load page data');
+        return;
+      }
+      const fullPage = pageData.data;
 
       const response = await fetch(`/api/admin/pages/${id}`, {
         method: 'PUT',
@@ -139,7 +145,7 @@ export default function AdminPagesPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          ...page,
+          ...fullPage,
           isActive: !currentStatus,
         }),
       });
@@ -149,7 +155,8 @@ export default function AdminPagesPage() {
         fetchPages();
         fetchRouteStatus();
       } else {
-        toast.error('Failed to update page');
+        const errData = await response.json();
+        toast.error(errData.message || 'Failed to update page');
       }
     } catch (error) {
       toast.error('Error updating page');
@@ -278,6 +285,12 @@ export default function AdminPagesPage() {
                         >
                           Edit
                         </Link>
+                        <button
+                          onClick={() => route.pageId && handleToggleActive(route.pageId, route.isActive)}
+                          className="text-sm text-orange-600 hover:text-orange-800 font-medium"
+                        >
+                          {route.isActive ? 'Deactivate' : 'Activate'}
+                        </button>
                       </div>
                       {route.lastUpdated && (
                         <span className="text-xs text-gray-500">
@@ -348,9 +361,9 @@ export default function AdminPagesPage() {
                           onClick={() => handleToggleActive(page._id, page.isActive)}
                           className={`px-3 py-1 rounded-full text-xs font-semibold ${
                             page.isActive
-                              ? 'bg-green-100 text-green-800'
-                              : 'bg-gray-100 text-gray-800'
-                          }`}
+                              ? 'bg-green-100 text-green-800 hover:bg-green-200'
+                              : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                          } transition-colors`}
                         >
                           {page.isActive ? 'Active' : 'Inactive'}
                         </button>
@@ -390,4 +403,3 @@ export default function AdminPagesPage() {
     </div>
   );
 }
-

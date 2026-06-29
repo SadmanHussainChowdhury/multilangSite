@@ -25,13 +25,16 @@ export async function GET(
     const page = await Page.findOne({
       slug,
       locale,
-      isActive: true,
       deletedAt: null,
     });
 
     if (!page) {
       // Return 404 but don't throw error - let client handle fallback
       return NextResponse.json({ message: 'Page not found' }, { status: 404 });
+    }
+
+    if (!page.isActive) {
+      return NextResponse.json({ message: 'Page is inactive' }, { status: 410 });
     }
 
     return NextResponse.json({ data: page });
@@ -43,4 +46,3 @@ export async function GET(
     );
   }
 }
-

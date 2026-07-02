@@ -1,27 +1,31 @@
-# MultiLang Site - Next.js Version
+# MultiLang Site - Next.js 14 Version
 
-A modern, multilingual website built with Next.js 14, MongoDB, and NextAuth. Converted from Laravel to Next.js.
+A modern, highly dynamic multilingual website built with Next.js 14 (App Router), MongoDB, and NextAuth. Converted from a legacy Laravel application into a fully real-time React application.
 
-## Features
+## 🚀 Key Features
 
-- 🌍 **Multi-language Support**: 11 languages (English, Arabic, Bengali, Spanish, French, German, Italian, Portuguese, Russian, Japanese, Chinese)
-- 🔐 **Authentication**: NextAuth with role-based access control (Admin/User)
-- 📝 **Registration System**: Contact form with MongoDB storage
-- 👨‍💼 **Admin Panel**: Manage registrations and users
-- 🎨 **Modern UI**: Tailwind CSS with responsive design
-- ⚡ **Performance**: Next.js 14 with App Router
+- 🌍 **Dynamic Multi-language Support**: 13 languages supported out of the box (English, Vietnamese, Indonesian, Uzbek, Mongolian, Nepali, Burmese, Sinhala, Bengali, Filipino, Khmer, Thai, Korean).
+- 🔄 **Real-Time Translation Engine**: Translations can be edited via the Admin Panel and instantly sync to the live frontend within 5 seconds without requiring a build or page refresh.
+- 👨‍💼 **Comprehensive Admin Panel**:
+  - **Translations Manager**: Side-by-side editing of localized strings with instant live-preview support.
+  - **Dynamic Pages System**: Create, edit, and deactivate SEO-friendly pages on the fly with rich text.
+  - **Logo Manager**: Instantly update the site's logo across all pages dynamically.
+  - **Registrations**: View, manage, and toggle the status of user contact submissions.
+- 🔐 **Authentication**: NextAuth.js with secure role-based access control (Admin vs User).
+- 📝 **Registration System**: Public contact form with secure MongoDB storage.
+- 🎨 **Modern UI**: Tailwind CSS with premium aesthetics, dynamic gradients, glassmorphism, and responsive design.
 
-## Tech Stack
+## 🛠 Tech Stack
 
 - **Framework**: Next.js 14 (App Router)
 - **Language**: TypeScript
 - **Database**: MongoDB with Mongoose
 - **Authentication**: NextAuth.js
 - **Styling**: Tailwind CSS
-- **Internationalization**: next-intl
+- **Internationalization**: next-intl + Custom MongoDB Cache Engine
 - **Notifications**: Sonner
 
-## Getting Started
+## 🏁 Getting Started
 
 ### Prerequisites
 
@@ -33,7 +37,6 @@ A modern, multilingual website built with Next.js 14, MongoDB, and NextAuth. Con
 
 1. **Install dependencies**:
    ```bash
-   cd nextjs-app
    npm install
    ```
 
@@ -52,70 +55,48 @@ A modern, multilingual website built with Next.js 14, MongoDB, and NextAuth. Con
    npm run dev
    ```
 
-4. **Open your browser**:
+4. **Seed Translations (First Run)**:
+   - Log into the Admin panel (`/en/auth/login`) using your admin credentials.
+   - Navigate to **Admin -> Translations**.
+   - Click **Import from JSON** to automatically seed your database with the default localized strings.
+
+5. **Open your browser**:
    Navigate to [http://localhost:3000](http://localhost:3000)
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 nextjs-app/
 ├── app/                    # Next.js App Router
 │   ├── [locale]/          # Localized routes
 │   │   ├── page.tsx       # Home page
-│   │   ├── contact/       # Contact page
+│   │   ├── admin/         # Full Admin Dashboard (Pages, Translations, Logo, etc.)
 │   │   └── auth/          # Authentication pages
 │   ├── api/               # API routes
 │   │   ├── auth/          # NextAuth routes
-│   │   ├── registrations/ # Registration API
-│   │   └── admin/         # Admin API
+│   │   ├── admin/         # Admin API endpoints
+│   │   └── translations/  # Real-time translation polling endpoints
 │   └── providers.tsx      # Client providers
-├── models/                # Mongoose models
-├── lib/                   # Utilities
+├── models/                # Mongoose database models
+├── lib/                   # Utilities & Caching Logic
 │   ├── mongodb.ts         # MongoDB connection
-│   └── auth.ts            # NextAuth config
+│   └── translationCache.ts# High-performance memory cache for i18n
 ├── i18n/                  # Internationalization
 │   ├── config.ts          # Locale configuration
-│   ├── request.ts         # i18n request handler
-│   └── messages/          # Translation files
-└── middleware.ts          # Auth middleware
+│   ├── request.ts         # Custom i18n request handler (DB fallback to JSON)
+│   └── messages/          # Fallback JSON files
+└── middleware.ts          # Auth & Locale middleware
 ```
 
-## API Routes
+## 🌐 Real-Time Translation System
 
-### Public Routes
-- `POST /api/registrations` - Submit registration form
-- `GET /api/registrations` - Get registrations (public)
+This project features a custom-built, highly optimized translation engine:
+1. **Fallback Strategy**: `next-intl` attempts to read translations from the MongoDB database first. If a key is missing, it merges in fallbacks from the local `.json` files.
+2. **Memory Caching**: Database translations are stored in a high-speed memory cache on the server.
+3. **Cache Invalidation**: When an admin updates a translation, the server purges the cache and increments a global translation version.
+4. **Client Polling**: An invisible client component (`TranslationRefresh.tsx`) polls the server every 5 seconds. If a version bump is detected, it triggers a lightweight `router.refresh()` to instantly update the UI.
 
-### Protected Routes (Admin)
-- `GET /api/admin/registrations` - Get all registrations
-- `DELETE /api/admin/registrations/[id]` - Delete registration
-
-## Database Models
-
-- **User**: Authentication and user management
-- **Registration**: Contact form submissions
-- **Page**: Dynamic content pages
-- **Role**: Role-based access control
-- **Permission**: Permission management
-
-## Multi-language Support
-
-The app supports 13 languages. Add translation files in `i18n/messages/`:
-
-- `en.json` - English (default)
-- `ar.json` - Arabic
-- `bn.json` - Bengali
-- `es.json` - Spanish
-- `fr.json` - French
-- And more...
-
-## Authentication
-
-- **Login**: `/auth/login`
-- **Dashboard**: `/dashboard` (protected)
-- **Admin Panel**: `/admin/*` (admin only)
-
-## Deployment
+## 🚀 Deployment
 
 ### Vercel (Recommended)
 
@@ -125,26 +106,14 @@ The app supports 13 languages. Add translation files in `i18n/messages/`:
    - `MONGODB_URI`: Your MongoDB connection string
    - `NEXTAUTH_SECRET`: A stable random secret, for example from `openssl rand -base64 32`
    - `NEXTAUTH_URL`: Your deployed app URL, for example `https://your-domain.vercel.app`
-4. In MongoDB Atlas, allow Vercel to connect to the database. If you are not using fixed egress IPs, add `0.0.0.0/0` in Network Access.
+4. In MongoDB Atlas, allow Vercel to connect to the database by adding `0.0.0.0/0` in Network Access.
 5. Deploy!
 
 ### Other Platforms
-
 - **Railway**: Easy MongoDB + Next.js deployment
 - **Render**: Full-stack platform
 - **DigitalOcean**: App Platform
 
-## Migration from Laravel
-
-This project was converted from Laravel. Key changes:
-
-- Laravel Blade → React/TSX components
-- Laravel Controllers → Next.js API routes
-- Eloquent Models → Mongoose schemas
-- Laravel Auth → NextAuth
-- Laravel i18n → next-intl
-
-## License
+## 📜 License
 
 MIT
-

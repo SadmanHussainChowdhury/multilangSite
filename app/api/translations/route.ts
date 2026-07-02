@@ -24,7 +24,11 @@ export async function GET(request: NextRequest) {
     const messages: Record<string, any> = {};
 
     translations.forEach((translation) => {
-      const keys = translation.key.split('.');
+      const fullKey = translation.namespace 
+        ? `${translation.namespace}.${translation.key}`
+        : translation.key;
+        
+      const keys = fullKey.split('.');
       let current = messages;
 
       for (let i = 0; i < keys.length - 1; i++) {

@@ -18,6 +18,7 @@ export default function NewPagePage() {
     locale,
     metaTitle: '',
     metaDescription: '',
+    imageUrl: '',
     isActive: true,
   });
 
@@ -347,6 +348,21 @@ export default function NewPagePage() {
                   onChange={handleChange}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="SEO description for search engines"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="imageUrl" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Featured Image URL (Optional)
+                </label>
+                <input
+                  type="text"
+                  id="imageUrl"
+                  name="imageUrl"
+                  value={formData.imageUrl}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="https://example.com/image.jpg"
                 />
               </div>
 

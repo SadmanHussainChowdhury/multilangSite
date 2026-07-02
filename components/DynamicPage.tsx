@@ -29,7 +29,9 @@ export default function DynamicPage({ slug, fallbackContent, children }: Dynamic
   const fetchPageContent = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/pages/${slug}?locale=${locale}`);
+      const response = await fetch(`/api/pages/${slug}?locale=${locale}`, {
+        cache: 'no-store'
+      });
       
       if (response.ok) {
         const data = await response.json();

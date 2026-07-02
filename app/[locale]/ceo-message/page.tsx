@@ -41,6 +41,15 @@ export default function CEOMessagePage() {
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-8 md:p-12">
           <h1 className="text-4xl font-bold text-gray-800 mb-8">{title}</h1>
+          {pageContent?.imageUrl && (
+            <div className="mb-8">
+              <img 
+                src={pageContent.imageUrl} 
+                alt={title} 
+                className="w-full max-h-96 object-cover rounded-lg shadow-sm"
+              />
+            </div>
+          )}
           <div 
             className="prose max-w-none"
             dangerouslySetInnerHTML={{ __html: content }}

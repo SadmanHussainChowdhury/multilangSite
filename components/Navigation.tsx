@@ -1,5 +1,7 @@
 'use client';
 
+'use client';
+
 import Link from 'next/link';
 import { useTranslations, useLocale } from 'next-intl';
 import { useCallback, useEffect, useState } from 'react';
@@ -7,6 +9,7 @@ import LanguageSwitcher from './LanguageSwitcher';
 import { useSession, signOut } from 'next-auth/react';
 
 interface Logo {
+  name?: string;
   imageUrl: string;
   altText?: string;
 }
@@ -23,7 +26,9 @@ export default function Navigation() {
   const fetchLogo = useCallback(async () => {
     try {
       setLogoLoading(true);
-      const response = await fetch(`/api/logo?locale=${locale}`);
+      const response = await fetch(`/api/logo?locale=${locale}`, {
+        cache: 'no-store',
+      });
       if (response.ok) {
         const data = await response.json();
         setLogo(data.data);
@@ -72,16 +77,23 @@ export default function Navigation() {
         <div className="flex justify-between items-center h-20">
           <Link href={`/${locale}`} className="flex items-center gap-3 hover:scale-105 transition-transform duration-300">
             {logoLoading ? (
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-lg animate-pulse"></div>
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-lg animate-pulse"></div>
             ) : logo && logo.imageUrl ? (
-              <img
-                src={logo.imageUrl}
-                alt={logo.altText || 'Logo'}
-                className="h-12 w-auto object-contain"
-                onError={() => {
-                  setLogo(null);
-                }}
-              />
+              <>
+                <img
+                  src={logo.imageUrl}
+                  alt={logo.altText || 'Logo'}
+                  className="h-10 w-auto object-contain"
+                  onError={() => {
+                    setLogo(null);
+                  }}
+                />
+                {logo.name && (
+                  <span className="text-2xl font-extrabold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent hidden sm:inline-block">
+                    {logo.name}
+                  </span>
+                )}
+              </>
             ) : (
               <span className="text-3xl font-extrabold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
                 MultiLang Site

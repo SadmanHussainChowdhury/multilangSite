@@ -8,6 +8,7 @@ interface PageContent {
   content: string;
   metaTitle?: string;
   metaDescription?: string;
+  imageUrl?: string;
 }
 
 export function usePageContent(slug: string, fallbackTitle?: string, fallbackContent?: string) {
@@ -23,7 +24,9 @@ export function usePageContent(slug: string, fallbackTitle?: string, fallbackCon
   const fetchPageContent = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/pages/${slug}?locale=${locale}`);
+      const response = await fetch(`/api/pages/${slug}?locale=${locale}`, {
+        cache: 'no-store'
+      });
       
       if (response.ok) {
         const data = await response.json();

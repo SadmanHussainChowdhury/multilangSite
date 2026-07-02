@@ -16,6 +16,7 @@ const pageSchema = z.object({
   locale: z.enum(['vi', 'id', 'uz', 'mn', 'ne', 'my', 'si', 'bn', 'fil', 'km', 'th', 'en', 'ko']),
   metaTitle: z.string().max(255).trim().optional(),
   metaDescription: z.string().max(500).trim().optional(),
+  imageUrl: z.string().optional().or(z.literal('')),
   isActive: z.boolean().optional(),
 });
 

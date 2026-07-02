@@ -15,6 +15,7 @@ interface Page {
   locale: string;
   metaTitle?: string;
   metaDescription?: string;
+  imageUrl?: string;
   isActive: boolean;
 }
 
@@ -31,6 +32,7 @@ export default function EditPagePage({ params }: { params: Promise<{ id: string 
     locale: 'en',
     metaTitle: '',
     metaDescription: '',
+    imageUrl: '',
     isActive: true,
   });
 
@@ -58,6 +60,7 @@ export default function EditPagePage({ params }: { params: Promise<{ id: string 
           locale: page.locale,
           metaTitle: page.metaTitle || '',
           metaDescription: page.metaDescription || '',
+          imageUrl: page.imageUrl || '',
           isActive: page.isActive,
         });
       } else {
@@ -388,6 +391,21 @@ export default function EditPagePage({ params }: { params: Promise<{ id: string 
                   value={formData.metaDescription}
                   onChange={handleChange}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="imageUrl" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Featured Image URL (Optional)
+                </label>
+                <input
+                  type="text"
+                  id="imageUrl"
+                  name="imageUrl"
+                  value={formData.imageUrl}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="https://example.com/image.jpg"
                 />
               </div>
 

@@ -7,6 +7,7 @@ export interface IPage extends Document {
   locale: string;
   metaTitle?: string;
   metaDescription?: string;
+  imageUrl?: string;
   isActive: boolean;
   deletedAt?: Date;
   createdAt: Date;
@@ -47,6 +48,10 @@ const PageSchema = new Schema<IPage>(
       type: String,
       trim: true,
     },
+    imageUrl: {
+      type: String,
+      trim: true,
+    },
     isActive: {
       type: Boolean,
       default: true,
@@ -74,4 +79,3 @@ PageSchema.index(
 const Page: Model<IPage> = mongoose.models.Page || mongoose.model<IPage>('Page', PageSchema);
 
 export default Page;
-

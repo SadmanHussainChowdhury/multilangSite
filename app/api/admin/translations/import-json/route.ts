@@ -1,13 +1,11 @@
-import { readFile } from 'fs/promises';
 import path from 'path';
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Translation from '@/models/Translation';
 import { requireAdmin } from '@/lib/admin-auth';
 import { clearCache } from '@/lib/translationCache';
 import { bumpTranslationVersion } from '@/lib/translationVersions';
 import { locales } from '@/i18n/config';
-import { NextRequest } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -53,6 +51,28 @@ function flattenMessages(
   return result;
 }
 
+async function readLocaleFile(locale: string): Promise<Record<string, unknown> | null> {
+  // Strategy 1: Try fs.readFile (works in Node.js on local dev and most servers)
+  try {
+    const { readFile } = await import('fs/promises');
+    const filePath = path.join(process.cwd(), 'i18n', 'messages', `${locale}.json`);
+    const content = await readFile(filePath, 'utf8');
+    return JSON.parse(content);
+  } catch (_) {
+    // fall through
+  }
+
+  // Strategy 2: Dynamic import (works when files are bundled, e.g. on Vercel)
+  try {
+    const mod = await import(`../../../../i18n/messages/${locale}.json`);
+    return mod.default ?? mod;
+  } catch (_) {
+    // fall through
+  }
+
+  return null;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const authError = await requireAdmin(request);
@@ -61,15 +81,22 @@ export async function POST(request: NextRequest) {
     await connectDB();
 
     const importedLocales: string[] = [];
+    const skippedLocales: string[] = [];
     let importedCount = 0;
 
     for (const locale of locales) {
-      const filePath = path.join(process.cwd(), 'i18n', 'messages', `${locale}.json`);
-      const file = await readFile(filePath, 'utf8');
-      const messages = JSON.parse(file) as Record<string, unknown>;
+      const messages = await readLocaleFile(locale);
+
+      if (!messages) {
+        console.warn(`Could not read messages file for locale: ${locale}`);
+        skippedLocales.push(locale);
+        continue;
+      }
+
       const translations = flattenMessages(messages, locale);
 
       if (translations.length === 0) {
+        skippedLocales.push(locale);
         continue;
       }
 
@@ -98,11 +125,12 @@ export async function POST(request: NextRequest) {
       message: 'Translations imported successfully',
       count: importedCount,
       locales: importedLocales,
+      skipped: skippedLocales,
     });
   } catch (error) {
     console.error('Import translations error:', error);
     return NextResponse.json(
-      { message: 'Failed to import translations' },
+      { message: `Failed to import translations: ${error instanceof Error ? error.message : 'Unknown error'}` },
       { status: 500 }
     );
   }

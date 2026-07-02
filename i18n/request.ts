@@ -13,11 +13,9 @@ async function getTranslationsFromDB(locale: string): Promise<any> {
     const messages: Record<string, any> = {};
 
     translations.forEach((translation) => {
-      const fullKey = translation.namespace 
-        ? `${translation.namespace}.${translation.key}`
-        : translation.key;
-      
-      const keys = fullKey.split('.');
+      // The key already contains the full path (e.g. "nav.aboutUs"),
+      // so we use it directly without prepending the namespace again.
+      const keys = translation.key.split('.');
       let current = messages;
 
       for (let i = 0; i < keys.length - 1; i++) {

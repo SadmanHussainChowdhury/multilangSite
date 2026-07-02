@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Translation from '@/models/Translation';
 import { clearCache, setCachedTranslation } from '@/lib/translationCache';
-import { requireAdmin } from '@/lib/admin-auth';
 import { locales } from '@/i18n/config';
 
 // Force dynamic rendering
@@ -11,9 +10,6 @@ export const dynamic = 'force-dynamic';
 // GET - Force refresh and return fresh translations for a locale
 export async function GET(request: NextRequest) {
   try {
-    const authError = await requireAdmin(request);
-    if (authError) return authError;
-
     const { searchParams } = new URL(request.url);
     const locale = searchParams.get('locale') || 'en';
     const forceRefresh = searchParams.get('force') === 'true';
@@ -34,11 +30,9 @@ export async function GET(request: NextRequest) {
     const messages: Record<string, any> = {};
 
     translations.forEach((translation) => {
-      const fullKey = translation.namespace 
-        ? `${translation.namespace}.${translation.key}`
-        : translation.key;
-        
-      const keys = fullKey.split('.');
+      // The key already contains the full path (e.g. "nav.aboutUs"),
+      // so we use it directly without prepending the namespace again.
+      const keys = translation.key.split('.');
       let current = messages;
 
       for (let i = 0; i < keys.length - 1; i++) {

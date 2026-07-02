@@ -345,7 +345,7 @@ export default function AdminTranslationsPage() {
               <div className="glass rounded-2xl border border-white/30 p-12 text-center animate-fade-in">
                 <div className="text-5xl mb-4">📭</div>
                 <h3 className="text-xl font-bold text-slate-700 mb-2">No translations yet</h3>
-                <p className="text-slate-500 mb-6">Click "Import from JSON" to seed the translations from your local JSON files.</p>
+                <p className="text-slate-500 mb-6">Click &quot;Import from JSON&quot; to seed the translations from your local JSON files.</p>
                 <button
                   onClick={handleBulkImport}
                   disabled={importing}

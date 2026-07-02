@@ -52,25 +52,15 @@ function flattenMessages(
 }
 
 async function readLocaleFile(locale: string): Promise<Record<string, unknown> | null> {
-  // Strategy 1: Try fs.readFile (works in Node.js on local dev and most servers)
   try {
     const { readFile } = await import('fs/promises');
     const filePath = path.join(process.cwd(), 'i18n', 'messages', `${locale}.json`);
     const content = await readFile(filePath, 'utf8');
     return JSON.parse(content);
-  } catch (_) {
-    // fall through
+  } catch (error) {
+    console.warn(`Could not read messages file for locale: ${locale}`, error);
+    return null;
   }
-
-  // Strategy 2: Dynamic import (works when files are bundled, e.g. on Vercel)
-  try {
-    const mod = await import(`../../../../i18n/messages/${locale}.json`);
-    return mod.default ?? mod;
-  } catch (_) {
-    // fall through
-  }
-
-  return null;
 }
 
 export async function POST(request: NextRequest) {

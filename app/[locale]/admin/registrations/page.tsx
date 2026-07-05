@@ -378,11 +378,10 @@ export default function AdminRegistrationsPage() {
                         <td className="px-6 py-4 whitespace-nowrap text-sm">
                           <button
                             onClick={() => handleToggleActive(registration._id, registration.isActive)}
-                            className={`px-3 py-1 rounded-full text-xs font-semibold transition-colors ${
-                              registration.isActive
+                            className={`px-3 py-1 rounded-full text-xs font-semibold transition-colors ${registration.isActive
                                 ? 'bg-green-100 text-green-800 hover:bg-green-200'
                                 : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                            }`}
+                              }`}
                           >
                             {registration.isActive ? 'Active' : 'Inactive'}
                           </button>

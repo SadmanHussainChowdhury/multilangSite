@@ -22,6 +22,7 @@ export default function Navigation() {
   const [logo, setLogo] = useState<Logo | null>(null);
   const [logoLoading, setLogoLoading] = useState(true);
   const [navigationVisibility, setNavigationVisibility] = useState<Record<string, boolean>>({});
+  const [customPages, setCustomPages] = useState<{slug: string, title: string}[]>([]);
 
   const fetchLogo = useCallback(async () => {
     try {
@@ -57,6 +58,7 @@ export default function Navigation() {
       if (response.ok) {
         const data = await response.json();
         setNavigationVisibility(data.data || {});
+        setCustomPages(data.customPages || []);
       }
     } catch (error) {
       console.error('Error fetching navigation visibility:', error);
@@ -178,6 +180,13 @@ export default function Navigation() {
               {t('helpSupport')}
             </Link>
             )}
+
+            {/* Custom Pages */}
+            {customPages.map(page => (
+              <Link key={page.slug} href={`/${locale}/${page.slug}`} className="text-slate-700 font-medium hover:text-blue-600 transition-all duration-300 hover:scale-105">
+                {page.title}
+              </Link>
+            ))}
             {status === 'authenticated' ? (
               <button
                 type="button"

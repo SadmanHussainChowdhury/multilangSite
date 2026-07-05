@@ -30,17 +30,23 @@ export async function GET(request: NextRequest) {
 
     const pages = await Page.find({
       locale,
-      slug: { $in: NAVIGATION_SLUGS },
       deletedAt: null,
-    }).select('slug isActive');
+    }).select('slug title isActive');
 
-    const pageMap = new Map(pages.map((page) => [page.slug, page.isActive]));
     const visibility = NAVIGATION_SLUGS.reduce<Record<string, boolean>>((acc, slug) => {
-      acc[slug] = pageMap.has(slug) ? Boolean(pageMap.get(slug)) : true;
+      const page = pages.find(p => p.slug === slug);
+      acc[slug] = page ? Boolean(page.isActive) : true;
       return acc;
     }, {});
 
-    return NextResponse.json({ data: visibility });
+    const customPages = pages.filter(
+      page => !NAVIGATION_SLUGS.includes(page.slug) && page.isActive
+    ).map(page => ({
+      slug: page.slug,
+      title: page.title
+    }));
+
+    return NextResponse.json({ data: visibility, customPages });
   } catch (error) {
     console.error('Fetch navigation visibility error:', error);
     return NextResponse.json(

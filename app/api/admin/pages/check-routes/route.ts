@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
     // Create a map of existing slugs
     const existingSlugs = new Set(existingPages.map(p => p.slug));
 
-    // Check each route
+    // Check each hardcoded route
     const routeStatus = EXISTING_ROUTES.map(route => {
       const hasPage = existingSlugs.has(route.slug);
       const page = existingPages.find(p => p.slug === route.slug);
@@ -55,7 +55,25 @@ export async function GET(request: NextRequest) {
         pageId: page?._id.toString(),
         isActive: page?.isActive || false,
         lastUpdated: page?.updatedAt || null,
+        isCustom: false,
       };
+    });
+
+    // Add any custom pages that are not in EXISTING_ROUTES
+    const existingRouteSlugs = new Set(EXISTING_ROUTES.map(r => r.slug));
+    existingPages.forEach(page => {
+      if (!existingRouteSlugs.has(page.slug)) {
+        routeStatus.push({
+          slug: page.slug,
+          name: page.title,
+          route: `/${page.slug}`,
+          hasPage: true,
+          pageId: page._id.toString(),
+          isActive: page.isActive,
+          lastUpdated: page.updatedAt,
+          isCustom: true,
+        });
+      }
     });
 
     return NextResponse.json({

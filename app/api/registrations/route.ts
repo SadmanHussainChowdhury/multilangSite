@@ -21,7 +21,7 @@ const registrationSchema = z.object({
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    
+
     // Clean up empty optional fields - convert empty strings to undefined
     const cleanedBody: any = {
       name: body.name?.trim(),
@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
       message: body.message?.trim() || undefined,
       country: body.country?.trim() || undefined,
     };
-    
+
     // Validate input
     const validatedData = registrationSchema.parse(cleanedBody);
 
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
     } catch {
       console.error('Database connection error');
       return NextResponse.json(
-        { 
+        {
           message: 'Database connection failed. Please check your MongoDB connection.'
         },
         { status: 500 }
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
     } catch {
       console.error('Registration creation error');
       return NextResponse.json(
-        { 
+        {
           message: 'Failed to save registration'
         },
         { status: 500 }
@@ -71,8 +71,8 @@ export async function POST(request: NextRequest) {
     if (error instanceof z.ZodError) {
       console.error('Validation error:', error.errors);
       return NextResponse.json(
-        { 
-          message: 'Validation error', 
+        {
+          message: 'Validation error',
           errors: error.errors.map((err) => ({
             path: err.path.join('.'),
             message: err.message,
@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
 
     console.error('Registration error:', error);
     return NextResponse.json(
-      { 
+      {
         message: 'Failed to save registration. Please try again later.'
       },
       { status: 500 }

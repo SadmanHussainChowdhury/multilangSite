@@ -34,6 +34,8 @@ export default function AdminPagesPage() {
   const [loading, setLoading] = useState(true);
   const [filterLocale, setFilterLocale] = useState<string>('all');
   const [showRouteStatus, setShowRouteStatus] = useState(true);
+  const [newRouteName, setNewRouteName] = useState('');
+  const [newRouteSlug, setNewRouteSlug] = useState('');
   const selectedLocale = filterLocale !== 'all' ? filterLocale : locale;
 
   useEffect(() => {
@@ -103,6 +105,41 @@ export default function AdminPagesPage() {
       }
     } catch (error) {
       toast.error('Error creating page');
+    }
+  };
+
+  const handleCreateCustomRoute = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newRouteName.trim() || !newRouteSlug.trim()) return;
+
+    try {
+      const response = await fetch('/api/admin/pages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: newRouteName.trim(),
+          slug: newRouteSlug.trim(),
+          locale: selectedLocale,
+          content: `<h2>${newRouteName.trim()}</h2><p>This is a custom page. Edit it through the admin panel.</p>`,
+          isActive: true,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success(`Custom route "${newRouteName}" created successfully`);
+        setNewRouteName('');
+        setNewRouteSlug('');
+        fetchPages();
+        fetchRouteStatus();
+      } else {
+        toast.error(data.message || 'Failed to create custom route');
+      }
+    } catch (error) {
+      toast.error('Error creating custom route');
     }
   };
 
@@ -234,12 +271,44 @@ export default function AdminPagesPage() {
           <div className="bg-white rounded-lg shadow-md p-6 mb-6">
             <div className="flex justify-between items-center mb-4">
               <div>
-                <h2 className="text-2xl font-bold text-gray-800">Existing Routes Status</h2>
+                <h2 className="text-2xl font-bold text-gray-800">Existing & Custom Routes Status</h2>
                 <p className="text-gray-600 text-sm mt-1">
                   {routeStatus.filter(r => r.hasPage).length} of {routeStatus.length} routes have pages
                 </p>
               </div>
             </div>
+
+            <form onSubmit={handleCreateCustomRoute} className="flex gap-4 mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200 items-end">
+              <div className="flex-1">
+                <label className="block text-sm font-semibold text-slate-700 mb-1">Route Name</label>
+                <input
+                  type="text"
+                  required
+                  value={newRouteName}
+                  onChange={(e) => setNewRouteName(e.target.value)}
+                  placeholder="e.g. Special Offers"
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                />
+              </div>
+              <div className="flex-1">
+                <label className="block text-sm font-semibold text-slate-700 mb-1">Route Slug</label>
+                <input
+                  type="text"
+                  required
+                  value={newRouteSlug}
+                  onChange={(e) => setNewRouteSlug(e.target.value)}
+                  placeholder="e.g. special-offers"
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                />
+              </div>
+              <button
+                type="submit"
+                className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
+              >
+                Create Route
+              </button>
+            </form>
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {routeStatus.map((route) => (
                 <div

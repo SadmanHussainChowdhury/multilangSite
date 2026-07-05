@@ -24,7 +24,10 @@ interface RouteStatus {
   hasPage: boolean;
   pageId?: string;
   isActive: boolean;
+  locale?: string;
+  locales?: { locale: string; isActive: boolean; pageId: string }[];
   lastUpdated: string | null;
+  isCustom?: boolean;
 }
 
 export default function AdminPagesPage() {
@@ -67,7 +70,11 @@ export default function AdminPagesPage() {
 
   const fetchRouteStatus = async () => {
     try {
-      const response = await fetch(`/api/admin/pages/check-routes?locale=${selectedLocale}`);
+      // Pass filterLocale so admin can filter; 'all' fetches everything across all locales
+      const url = filterLocale !== 'all'
+        ? `/api/admin/pages/check-routes?locale=${filterLocale}`
+        : '/api/admin/pages/check-routes?locale=all';
+      const response = await fetch(url);
       const data = await response.json();
 
       if (response.ok) {
@@ -322,12 +329,29 @@ export default function AdminPagesPage() {
                   }`}
                 >
                   <div className="flex justify-between items-start mb-2">
-                    <div>
-                      <h3 className="font-semibold text-gray-800">{route.name}</h3>
-                      <p className="text-sm text-gray-600">{route.route}</p>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h3 className="font-semibold text-gray-800 truncate">{route.name}</h3>
+                        {route.isCustom && (
+                          <span className="px-1.5 py-0.5 bg-purple-100 text-purple-700 text-xs rounded font-medium">Custom</span>
+                        )}
+                      </div>
+                      <p className="text-sm text-gray-500">{route.route}</p>
+                      {/* Show which locales have this page */}
+                      {route.locales && route.locales.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {route.locales.map(l => (
+                            <span key={l.locale} className={`px-1.5 py-0.5 rounded text-xs font-medium ${
+                              l.isActive ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-500 line-through'
+                            }`}>
+                              {l.locale}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
                     <span
-                      className={`px-2 py-1 rounded text-xs font-semibold ${
+                      className={`ml-2 shrink-0 px-2 py-1 rounded text-xs font-semibold ${
                         route.hasPage
                           ? route.isActive
                             ? 'bg-green-200 text-green-800'
@@ -340,29 +364,37 @@ export default function AdminPagesPage() {
                   </div>
                   {route.hasPage ? (
                     <div className="flex flex-col gap-2 mt-3">
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 flex-wrap">
                         <Link
-                          href={`/${selectedLocale}${route.route}`}
+                          href={`/${route.locale || selectedLocale}${route.route}`}
                           target="_blank"
                           className="text-sm text-green-600 hover:text-green-800 font-medium"
                         >
                           View
                         </Link>
+                        {route.pageId && (
                         <Link
                           href={`/${locale}/admin/pages/${route.pageId}/edit`}
                           className="text-sm text-blue-600 hover:text-blue-800 font-medium"
                         >
                           Edit
                         </Link>
+                        )}
+                        {route.pageId && (
                         <button
-                          onClick={() => route.pageId && handleToggleActive(route.pageId, route.isActive)}
-                          className="text-sm text-orange-600 hover:text-orange-800 font-medium"
+                          onClick={() => handleToggleActive(route.pageId!, route.isActive)}
+                          className={`text-sm font-medium ${
+                            route.isActive
+                              ? 'text-orange-600 hover:text-orange-800'
+                              : 'text-green-600 hover:text-green-800'
+                          }`}
                         >
                           {route.isActive ? 'Deactivate' : 'Activate'}
                         </button>
+                        )}
                       </div>
                       {route.lastUpdated && (
-                        <span className="text-xs text-gray-500">
+                        <span className="text-xs text-gray-400">
                           Updated: {new Date(route.lastUpdated).toLocaleDateString()}
                         </span>
                       )}

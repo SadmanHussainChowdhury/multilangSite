@@ -2,12 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Page from '@/models/Page';
 import { requireAdmin } from '@/lib/admin-auth';
-import { locales } from '@/i18n/config';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 
-// Define all existing routes/slugs in the application
+// Define all existing hardcoded routes/slugs in the application
 const EXISTING_ROUTES = [
   { slug: 'home', name: 'Home Page', route: '/' },
   { slug: 'about', name: 'About Us', route: '/about' },
@@ -20,65 +19,81 @@ const EXISTING_ROUTES = [
   { slug: 'supported-countries', name: 'Supported Countries', route: '/supported-countries' },
 ];
 
-// GET - Check which routes have pages in database
+// GET - Check which routes have pages in database (across ALL locales)
 export async function GET(request: NextRequest) {
   try {
     const authError = await requireAdmin(request);
     if (authError) return authError;
 
     const { searchParams } = new URL(request.url);
-    const locale = searchParams.get('locale') || 'en';
-
-    if (!locales.includes(locale as any)) {
-      return NextResponse.json({ message: 'Invalid locale' }, { status: 400 });
-    }
+    // locale param is now optional; if provided, filter; if 'all' or absent, show all
+    const localeFilter = searchParams.get('locale') || 'all';
 
     await connectDB();
 
-    // Get all pages for this locale
-    const existingPages = await Page.find({
-      locale,
-      deletedAt: null,
+    // Get ALL pages (no locale filter, so we see everything including custom pages in any locale)
+    const query: any = { deletedAt: null };
+    if (localeFilter && localeFilter !== 'all') {
+      query.locale = localeFilter;
+    }
+    const existingPages = await Page.find(query).lean();
+
+    // Group pages by slug for easier lookup
+    const pagesBySlug = new Map<string, any[]>();
+    existingPages.forEach((page: any) => {
+      const arr = pagesBySlug.get(page.slug) || [];
+      arr.push(page);
+      pagesBySlug.set(page.slug, arr);
     });
 
-    // Create a map of existing slugs
-    const existingSlugs = new Set(existingPages.map(p => p.slug));
-
     // Check each hardcoded route
-    const routeStatus = EXISTING_ROUTES.map(route => {
-      const hasPage = existingSlugs.has(route.slug);
-      const page = existingPages.find(p => p.slug === route.slug);
-      
+    const existingRouteSlugs = new Set(EXISTING_ROUTES.map(r => r.slug));
+    const routeStatus: any[] = EXISTING_ROUTES.map(route => {
+      const pagesForSlug = pagesBySlug.get(route.slug) || [];
+      const hasPage = pagesForSlug.length > 0;
+      // Use the first active page, or just the first page
+      const activePage = pagesForSlug.find((p: any) => p.isActive) || pagesForSlug[0];
+
       return {
         ...route,
         hasPage,
-        pageId: page?._id.toString(),
-        isActive: page?.isActive || false,
-        lastUpdated: page?.updatedAt || null,
+        pageId: activePage?._id?.toString(),
+        isActive: activePage?.isActive || false,
+        locale: activePage?.locale || null,
+        locales: pagesForSlug.map((p: any) => ({ locale: p.locale, isActive: p.isActive, pageId: p._id.toString() })),
+        lastUpdated: activePage?.updatedAt || null,
         isCustom: false,
       };
     });
 
     // Add any custom pages that are not in EXISTING_ROUTES
-    const existingRouteSlugs = new Set(EXISTING_ROUTES.map(r => r.slug));
-    existingPages.forEach(page => {
+    const seenCustomSlugs = new Set<string>();
+    existingPages.forEach((page: any) => {
       if (!existingRouteSlugs.has(page.slug)) {
-        routeStatus.push({
-          slug: page.slug,
-          name: page.title,
-          route: `/${page.slug}`,
-          hasPage: true,
-          pageId: page._id.toString(),
-          isActive: page.isActive,
-          lastUpdated: page.updatedAt,
-          isCustom: true,
-        });
+        const key = page.slug;
+        if (!seenCustomSlugs.has(key)) {
+          seenCustomSlugs.add(key);
+          const allForSlug = pagesBySlug.get(page.slug) || [];
+          const activePage = allForSlug.find((p: any) => p.isActive) || allForSlug[0];
+          routeStatus.push({
+            slug: page.slug,
+            name: page.title,
+            route: `/${page.slug}`,
+            hasPage: true,
+            pageId: activePage?._id?.toString(),
+            isActive: activePage?.isActive || false,
+            locale: activePage?.locale || null,
+            locales: allForSlug.map((p: any) => ({ locale: p.locale, isActive: p.isActive, pageId: p._id.toString() })),
+            lastUpdated: activePage?.updatedAt || null,
+            isCustom: true,
+          });
+        }
       }
     });
 
     return NextResponse.json({
       data: routeStatus,
-      total: EXISTING_ROUTES.length,
+      total: routeStatus.length,
       withPages: routeStatus.filter(r => r.hasPage).length,
       withoutPages: routeStatus.filter(r => !r.hasPage).length,
     });

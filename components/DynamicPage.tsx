@@ -25,6 +25,7 @@ export default function DynamicPage({ slug, fallbackContent, children }: Dynamic
   const locale = useLocale();
   const [pageContent, setPageContent] = useState<PageContent | null>(null);
   const [loading, setLoading] = useState(true);
+  const [pageStatus, setPageStatus] = useState<number>(200); // track HTTP status
 
   const fetchPageContent = useCallback(async () => {
     try {
@@ -32,22 +33,28 @@ export default function DynamicPage({ slug, fallbackContent, children }: Dynamic
       const response = await fetch(`/api/pages/${slug}?locale=${locale}`, {
         cache: 'no-store'
       });
-      
+
+      setPageStatus(response.status);
+
       if (response.ok) {
         const data = await response.json();
         setPageContent(data.data);
+      } else if (response.status === 410) {
+        // Page exists but is deactivated
+        setPageContent(null);
       } else {
-        // Use fallback content if page not found in DB
+        // 404 or other error — use fallback
         if (fallbackContent) {
           setPageContent({
             title: fallbackContent.title,
             content: fallbackContent.content,
           });
+        } else {
+          setPageContent(null);
         }
       }
     } catch (error) {
       console.error('Error fetching page content:', error);
-      // Use fallback content on error
       if (fallbackContent) {
         setPageContent({
           title: fallbackContent.title,
@@ -70,6 +77,25 @@ export default function DynamicPage({ slug, fallbackContent, children }: Dynamic
         <div className="container mx-auto px-4 py-16">
           <div className="text-center">
             <div className="text-xl">Loading...</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Page is deactivated (admin set it to inactive)
+  if (pageStatus === 410) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Navigation />
+        <div className="container mx-auto px-4 py-16">
+          <div className="text-center max-w-md mx-auto">
+            <div className="text-6xl mb-4">🔒</div>
+            <h1 className="text-3xl font-bold text-gray-800 mb-3">Page Unavailable</h1>
+            <p className="text-gray-500 mb-6">This page has been temporarily deactivated by the administrator.</p>
+            <a href={`/${locale}`} className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition">
+              ← Back to Home
+            </a>
           </div>
         </div>
       </div>

@@ -15,6 +15,7 @@ export function usePageContent(slug: string, fallbackTitle?: string, fallbackCon
   const locale = useLocale();
   const [pageContent, setPageContent] = useState<PageContent | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isDeactivated, setIsDeactivated] = useState(false);
 
   useEffect(() => {
     fetchPageContent();
@@ -24,15 +25,21 @@ export function usePageContent(slug: string, fallbackTitle?: string, fallbackCon
   const fetchPageContent = async () => {
     try {
       setLoading(true);
+      setIsDeactivated(false);
+
       const response = await fetch(`/api/pages/${slug}?locale=${locale}`, {
         cache: 'no-store'
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         setPageContent(data.data);
+      } else if (response.status === 410) {
+        // Page explicitly deactivated by admin — do NOT fall back to translation content
+        setIsDeactivated(true);
+        setPageContent(null);
       } else {
-        // Use fallback content if page not found in DB
+        // 404 or other error: page doesn't exist in DB → use fallback translation content
         if (fallbackTitle && fallbackContent) {
           setPageContent({
             title: fallbackTitle,
@@ -42,7 +49,7 @@ export function usePageContent(slug: string, fallbackTitle?: string, fallbackCon
       }
     } catch (error) {
       console.error('Error fetching page content:', error);
-      // Use fallback content on error
+      // Network/server error → use fallback
       if (fallbackTitle && fallbackContent) {
         setPageContent({
           title: fallbackTitle,
@@ -54,6 +61,5 @@ export function usePageContent(slug: string, fallbackTitle?: string, fallbackCon
     }
   };
 
-  return { pageContent, loading };
+  return { pageContent, loading, isDeactivated };
 }
-

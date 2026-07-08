@@ -5,6 +5,7 @@ import Navigation from '@/components/Navigation';
 import Link from 'next/link';
 import { useLocale } from 'next-intl';
 import { usePageContent } from '@/hooks/usePageContent';
+import PageUnavailable from '@/components/PageUnavailable';
 import { sanitizeHtmlContent } from '@/lib/sanitizeHtml';
 
 export default function IncomeTaxRefundPage() {
@@ -14,7 +15,7 @@ export default function IncomeTaxRefundPage() {
   
   // Try to fetch from database, fallback to translations
   const fallbackContent = `${t('description')}\n\n${t('details')}`;
-  const { pageContent, loading } = usePageContent('incometaxrefund', t('title'), fallbackContent);
+  const { pageContent, loading, isDeactivated } = usePageContent('incometaxrefund', t('title'), fallbackContent);
 
   if (loading) {
     return (
@@ -28,6 +29,8 @@ export default function IncomeTaxRefundPage() {
       </div>
     );
   }
+
+  if (isDeactivated) return <PageUnavailable />;
 
   const title = pageContent?.title || t('title');
   const content = sanitizeHtmlContent(pageContent?.content || fallbackContent);

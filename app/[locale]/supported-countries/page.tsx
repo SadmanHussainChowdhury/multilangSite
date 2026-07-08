@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 import Navigation from '@/components/Navigation';
 import { usePageContent } from '@/hooks/usePageContent';
+import PageUnavailable from '@/components/PageUnavailable';
 import { sanitizeHtmlContent } from '@/lib/sanitizeHtml';
 
 const defaultCountries = [
@@ -27,7 +28,7 @@ export default function SupportedCountriesPage() {
   // Try to fetch from database, fallback to translations
   const fallbackContent = `<p class="text-xl text-gray-600 mb-2">${t('subtitle')}</p>
 <p class="text-lg text-gray-700">${t('description')}</p>`;
-  const { pageContent, loading } = usePageContent('supported-countries', t('title'), fallbackContent);
+  const { pageContent, loading, isDeactivated } = usePageContent('supported-countries', t('title'), fallbackContent);
 
   if (loading) {
     return (
@@ -41,6 +42,8 @@ export default function SupportedCountriesPage() {
       </div>
     );
   }
+
+  if (isDeactivated) return <PageUnavailable />;
 
   const title = pageContent?.title || t('title');
   const content = sanitizeHtmlContent(pageContent?.content || fallbackContent);

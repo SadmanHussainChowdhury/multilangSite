@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 import Navigation from '@/components/Navigation';
 import { usePageContent } from '@/hooks/usePageContent';
+import PageUnavailable from '@/components/PageUnavailable';
 import { sanitizeHtmlContent } from '@/lib/sanitizeHtml';
 
 export default function CEOMessagePage() {
@@ -17,7 +18,7 @@ export default function CEOMessagePage() {
   <p class="text-gray-700">${t('signature')}</p>
   <p class="text-gray-800 font-semibold mt-2">${t('ceoName')}</p>
 </div>`;
-  const { pageContent, loading } = usePageContent('ceo-message', t('title'), fallbackContent);
+  const { pageContent, loading, isDeactivated } = usePageContent('ceo-message', t('title'), fallbackContent);
 
   if (loading) {
     return (
@@ -31,6 +32,8 @@ export default function CEOMessagePage() {
       </div>
     );
   }
+
+  if (isDeactivated) return <PageUnavailable />;
 
   const title = pageContent?.title || t('title');
   const content = sanitizeHtmlContent(pageContent?.content || fallbackContent);

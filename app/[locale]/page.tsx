@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useLocale } from 'next-intl';
 import Navigation from '@/components/Navigation';
 import { usePageContent } from '@/hooks/usePageContent';
+import PageUnavailable from '@/components/PageUnavailable';
 import { sanitizeHtmlContent } from '@/lib/sanitizeHtml';
 
 export default function HomePage() {
@@ -16,7 +17,7 @@ export default function HomePage() {
   // Try to fetch from database, fallback to translations
   const fallbackContent = `<p class="text-2xl md:text-3xl font-semibold mb-6 text-slate-700">${tHome('subtitle')}</p>
 <p class="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto mb-10 leading-relaxed">${tHome('description')}</p>`;
-  const { pageContent, loading } = usePageContent('home', tHome('title'), fallbackContent);
+  const { pageContent, loading, isDeactivated } = usePageContent('home', tHome('title'), fallbackContent);
 
   if (loading) {
     return (
@@ -30,6 +31,8 @@ export default function HomePage() {
       </div>
     );
   }
+
+  if (isDeactivated) return <PageUnavailable />;
 
   const title = pageContent?.title || tHome('title');
   const heroContent = sanitizeHtmlContent(pageContent?.content || fallbackContent);

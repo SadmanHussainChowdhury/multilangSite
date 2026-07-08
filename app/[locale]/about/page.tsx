@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 import Navigation from '@/components/Navigation';
 import { usePageContent } from '@/hooks/usePageContent';
+import PageUnavailable from '@/components/PageUnavailable';
 import { sanitizeHtmlContent } from '@/lib/sanitizeHtml';
 
 export default function AboutPage() {
@@ -10,7 +11,7 @@ export default function AboutPage() {
   
   // Try to fetch from database, fallback to translations
   const fallbackContent = `${t('subtitle')}\n\n${t('description')}`;
-  const { pageContent, loading } = usePageContent('about', t('title'), fallbackContent);
+  const { pageContent, loading, isDeactivated } = usePageContent('about', t('title'), fallbackContent);
 
   if (loading) {
     return (
@@ -24,6 +25,8 @@ export default function AboutPage() {
       </div>
     );
   }
+
+  if (isDeactivated) return <PageUnavailable />;
 
   const title = pageContent?.title || t('title');
   const content = sanitizeHtmlContent(pageContent?.content || fallbackContent);

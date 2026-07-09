@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { use, useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import { toast } from 'sonner';
@@ -20,11 +20,12 @@ interface Page {
 }
 
 export default function EditPagePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const router = useRouter();
   const locale = useLocale();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [pageId, setPageId] = useState<string>('');
+  const [pageId, setPageId] = useState<string>(id);
   const [formData, setFormData] = useState({
     title: '',
     content: '',
@@ -45,10 +46,7 @@ export default function EditPagePage({ params }: { params: Promise<{ id: string 
 
   const loadPage = useCallback(async () => {
     try {
-      const resolvedParams = await params;
-      setPageId(resolvedParams.id);
-
-      const response = await fetch(`/api/admin/pages/${resolvedParams.id}`);
+      const response = await fetch(`/api/admin/pages/${id}`);
       const data = await response.json();
 
       if (response.ok && data.data) {
@@ -73,7 +71,7 @@ export default function EditPagePage({ params }: { params: Promise<{ id: string 
     } finally {
       setLoading(false);
     }
-  }, [locale, params, router]);
+  }, [locale, id, router]);
 
   useEffect(() => {
     loadPage();
@@ -108,16 +106,28 @@ export default function EditPagePage({ params }: { params: Promise<{ id: string 
     }
 
     setImgUploading(true);
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImgUrl(reader.result as string);
+    
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+      
+      const response = await fetch('/api/admin/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        setImgUrl(data.url);
+      } else {
+        toast.error(data.message || 'Failed to upload image');
+      }
+    } catch (error) {
+      toast.error('Error uploading image');
+    } finally {
       setImgUploading(false);
-    };
-    reader.onerror = () => {
-      toast.error('Failed to read file');
-      setImgUploading(false);
-    };
-    reader.readAsDataURL(file);
+    }
   };
 
   const insertImageTag = () => {

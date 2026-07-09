@@ -30,13 +30,13 @@ function normalizeSlug(value: string) {
 // GET - Fetch a single page by ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authError = await requireAdmin(request);
     if (authError) return authError;
 
-    const { id } = params;
+    const { id } = await params;
     await connectDB();
 
     const page = await Page.findOne({ _id: id, deletedAt: null });
@@ -58,13 +58,13 @@ export async function GET(
 // PUT - Update a page
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authError = await requireAdmin(request);
     if (authError) return authError;
 
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
 
     // Validate input
@@ -126,13 +126,13 @@ export async function PUT(
 // DELETE - Soft delete a page
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authError = await requireAdmin(request);
     if (authError) return authError;
 
-    const { id } = params;
+    const { id } = await params;
     await connectDB();
 
     const page = await Page.findOne({ _id: id, deletedAt: null });

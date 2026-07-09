@@ -18,13 +18,13 @@ const translationUpdateSchema = z.object({
 // GET - Get single translation
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authError = await requireAdmin(request);
     if (authError) return authError;
 
-    const { id } = params;
+    const { id } = await params;
     await connectDB();
 
     const translation = await Translation.findById(id);
@@ -46,13 +46,13 @@ export async function GET(
 // PUT - Update translation
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authError = await requireAdmin(request);
     if (authError) return authError;
 
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
 
     const validatedData = translationUpdateSchema.parse(body);
@@ -114,13 +114,13 @@ export async function PUT(
 // DELETE - Delete translation
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authError = await requireAdmin(request);
     if (authError) return authError;
 
-    const { id } = params;
+    const { id } = await params;
     await connectDB();
 
     const translation = await Translation.findByIdAndDelete(id);

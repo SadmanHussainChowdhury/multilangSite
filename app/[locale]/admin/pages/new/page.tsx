@@ -68,16 +68,28 @@ export default function NewPagePage() {
     }
 
     setImgUploading(true);
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImgUrl(reader.result as string);
+    
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+      
+      const response = await fetch('/api/admin/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        setImgUrl(data.url);
+      } else {
+        toast.error(data.message || 'Failed to upload image');
+      }
+    } catch (error) {
+      toast.error('Error uploading image');
+    } finally {
       setImgUploading(false);
-    };
-    reader.onerror = () => {
-      toast.error('Failed to read file');
-      setImgUploading(false);
-    };
-    reader.readAsDataURL(file);
+    }
   };
 
   const insertImageTag = () => {

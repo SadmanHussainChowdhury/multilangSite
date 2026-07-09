@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useLocale } from 'next-intl';
 
 interface PageContent {
@@ -17,12 +17,7 @@ export function usePageContent(slug: string, fallbackTitle?: string, fallbackCon
   const [loading, setLoading] = useState(true);
   const [isDeactivated, setIsDeactivated] = useState(false);
 
-  useEffect(() => {
-    fetchPageContent();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [slug, locale]);
-
-  const fetchPageContent = async () => {
+  const fetchPageContent = useCallback(async () => {
     try {
       setLoading(true);
       setIsDeactivated(false);
@@ -59,7 +54,11 @@ export function usePageContent(slug: string, fallbackTitle?: string, fallbackCon
     } finally {
       setLoading(false);
     }
-  };
+  }, [slug, locale, fallbackTitle, fallbackContent]);
+
+  useEffect(() => {
+    fetchPageContent();
+  }, [fetchPageContent]);
 
   return { pageContent, loading, isDeactivated };
 }

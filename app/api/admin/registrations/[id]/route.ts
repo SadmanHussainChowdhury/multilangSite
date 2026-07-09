@@ -21,14 +21,14 @@ const registrationUpdateSchema = z.object({
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authError = await requireAdmin(request);
     if (authError) return authError;
 
     await connectDB();
-    const { id } = params;
+    const { id } = await params;
 
     const registration = await Registration.findById(id);
 
@@ -48,14 +48,14 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authError = await requireAdmin(request);
     if (authError) return authError;
 
     await connectDB();
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
 
     const validatedData = registrationUpdateSchema.parse(body);
@@ -97,14 +97,14 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authError = await requireAdmin(request);
     if (authError) return authError;
 
     await connectDB();
-    const { id } = params;
+    const { id } = await params;
 
     const registration = await Registration.findByIdAndDelete(id);
 

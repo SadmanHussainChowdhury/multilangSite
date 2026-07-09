@@ -1,7 +1,7 @@
 'use client';
 
-import { use, useCallback, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
+import { useRouter, useParams } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import { toast } from 'sonner';
 import AdminNav from '@/components/AdminNav';
@@ -19,13 +19,13 @@ interface Page {
   isActive: boolean;
 }
 
-export default function EditPagePage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+export default function EditPagePage() {
+  const params = useParams();
+  const id = params?.id as string;
   const router = useRouter();
   const locale = useLocale();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [pageId, setPageId] = useState<string>(id);
   const [formData, setFormData] = useState({
     title: '',
     content: '',
@@ -148,7 +148,7 @@ export default function EditPagePage({ params }: { params: Promise<{ id: string 
     setSaving(true);
 
     try {
-      const response = await fetch(`/api/admin/pages/${pageId}`, {
+      const response = await fetch(`/api/admin/pages/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

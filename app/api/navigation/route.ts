@@ -6,6 +6,7 @@ import { locales } from '@/i18n/config';
 export const dynamic = 'force-dynamic';
 
 const NAVIGATION_SLUGS = [
+  'home',
   'about',
   'ceo-message',
   'contact',
@@ -15,6 +16,7 @@ const NAVIGATION_SLUGS = [
   'visa-changes',
   'job-support',
   'supported-countries',
+  'welcome',
 ];
 
 export async function GET(request: NextRequest) {

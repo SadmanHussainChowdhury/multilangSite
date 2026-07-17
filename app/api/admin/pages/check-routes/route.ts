@@ -11,12 +11,14 @@ const EXISTING_ROUTES = [
   { slug: 'home', name: 'Home Page', route: '/' },
   { slug: 'about', name: 'About Us', route: '/about' },
   { slug: 'ceo-message', name: 'CEO Message', route: '/ceo-message' },
+  { slug: 'contact', name: 'Contact Us', route: '/contact' },
   { slug: 'incometaxrefund', name: 'Income Tax Refund', route: '/incometaxrefund' },
   { slug: 'houserenttaxrefund', name: 'House Rent Tax Refund', route: '/houserenttaxrefund' },
   { slug: 'familytaxrefund', name: 'Family Tax Refund', route: '/familytaxrefund' },
   { slug: 'visa-changes', name: 'Visa Changes', route: '/visa-changes' },
   { slug: 'job-support', name: 'Job Support', route: '/job-support' },
   { slug: 'supported-countries', name: 'Supported Countries', route: '/supported-countries' },
+  { slug: 'welcome', name: 'Welcome', route: '/welcome' },
 ];
 
 // GET - Check which routes have pages in database (across ALL locales)
